@@ -22,7 +22,7 @@
 ";"                   {printf("SEMICOLON\n");}
 ","                   {printf("COMMA\n");}
 "="                   {printf("ASSIGNMENT\n");}
-[a-zA-Z][a-zA-Z0-9]*	{printf("ID(%s)\n",yytext);}
+[a-zA-Z][a-zA-Z0-9]*  {printf("ID(%s)\n",yytext);}
 .                     {printf("Invalid character.\n");}
 
 %%
