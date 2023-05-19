@@ -5,5 +5,6 @@ func main()
 
     index_left = 0;
     index_right = 0;
-    index_merged = 'test';
+    index_merged = "test";
+    print(index_merged);
 endfunc
