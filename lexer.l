@@ -6,6 +6,7 @@
 
 [ \t\n]                ;
 [0-9]+                 {printf("NUMBER(%s)\n",yytext);}
+[0-9]\.[0-9]+	       {printf("FLOAT_NUMBER (%s)\n",yytext);}
 "func"                 {printf("FUNC\n");}
 "endfunc"              {printf("ENDFUNC\n");}
 "while"                {printf("WHILE\n");}
