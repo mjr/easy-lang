@@ -1,9 +1,9 @@
 func main()
-    print('hello world')
+
+    output ("input your name: ");
+    str name = input();
 
     int index_left, index_right, index_merged;
-
-    float num = 1.34;
 
     index_left = 0;
     index_right = 0;
