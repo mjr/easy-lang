@@ -23,6 +23,8 @@
 "("                    {printf("LPAREN\n");}
 ")"                    {printf("RPAREN\n");}
 ";"                    {printf("SEMICOLON\n");}
+"["                    {printf("LBRACKET\n";}
+"]"                    {printf("RBRACKET\n";}
 ","                    {printf("COMMA\n");}
 "="                    {printf("ASSIGNMENT\n");}
 "+"                    {printf("OP_PLUS\n");}
@@ -50,6 +52,7 @@
 "bool"                 {printf("T_BOOLEAN\n");}
 "print"                {printf("PRINT\n");}
 "return"               {printf("RETURN\n");}
+"null"                 {printf("NULL\n");}
 \'([^\'\\\n]|(\\.))*\' {printf("STRING(%s)\n", yytext);}
 \"([^\"\\\n]|(\\.))*\" {printf("STRING(%s)\n", yytext);}
 [a-zA-Z][a-zA-Z0-9_]*  {printf("ID(%s)\n",yytext);}
