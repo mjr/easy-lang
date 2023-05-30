@@ -23,8 +23,8 @@
 "("                    {printf("LPAREN\n");}
 ")"                    {printf("RPAREN\n");}
 ";"                    {printf("SEMICOLON\n");}
-"["                    {printf("LBRACKET\n";}
-"]"                    {printf("RBRACKET\n";}
+"["                    {printf("LBRACKET\n");}
+"]"                    {printf("RBRACKET\n");}
 ","                    {printf("COMMA\n");}
 "="                    {printf("ASSIGNMENT\n");}
 "+"                    {printf("OP_PLUS\n");}
