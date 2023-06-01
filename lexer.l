@@ -6,7 +6,7 @@
 
 [ \t\n]                ;
 [0-9]+                 {printf("NUMBER(%s)\n",yytext);}
-[0-9]\.[0-9]+	       {printf("FLOAT_NUMBER (%s)\n",yytext);}
+[0-9]\.[0-9]+	         {printf("FLOAT_NUMBER (%s)\n",yytext);}
 "func"                 {printf("FUNC\n");}
 "endfunc"              {printf("ENDFUNC\n");}
 "while"                {printf("WHILE\n");}
@@ -16,8 +16,7 @@
 "if"                   {printf("IF\n");}
 "endif"                {printf("ENDIF\n");}
 "else"                 {printf("ELSE\n");}
-"input" 	       {printf("INPUT_RECEIVER\n");}
-"output"               {printf("OUTPUT_THROWER\n");}
+"input" 	             {printf("INPUT\n");}
 "'"                    {printf("SQUOTE\n");}
 "\""                   {printf("DQUOTE\n");}
 "("                    {printf("LPAREN\n");}
@@ -37,15 +36,15 @@
 "<"                    {printf("LESS_THAN\n");}
 ">="                   {printf("GREATER_THAN_OR_EQUAL\n");}
 "<="                   {printf("LESS_THAN_OR_EQUAL\n");}
-"++"		       {printf("INCREMENT\n");}
-"--"		       {printf("DECREMENT\n");}
-"+="		       {printf("ADITION_ASSIGNMENT\n");}
-"-="		       {printf("SUBTRACTION_ASSIGNMENT\n");}
-"LAND"		       {printf("LOGICAL_AND\n");}
-"LOR"		       {printf("LOGICAL_OR\n");}
-"LNOT"                 {printf("LOGICAL_NOT\n");}
-"CONST"		       {printf("CONSTANT_VALUE\n");}
-"GLOBAL"	       {printf("GLOBAL_VALUE\n");}
+"++"                   {printf("INCREMENT\n");}
+"--"                   {printf("DECREMENT\n");}
+"+="                   {printf("ADITION_ASSIGNMENT\n");}
+"-="                   {printf("SUBTRACTION_ASSIGNMENT\n");}
+"and"                  {printf("LOGICAL_AND\n");}
+"or"                   {printf("LOGICAL_OR\n");}
+"not"                  {printf("LOGICAL_NOT\n");}
+"const"                {printf("CONSTANT_VALUE\n");}
+"global"               {printf("GLOBAL_VALUE\n");}
 "int"                  {printf("T_INT\n");}
 "float"                {printf("T_FLOAT\n");}
 "str"                  {printf("T_STRING\n");}
