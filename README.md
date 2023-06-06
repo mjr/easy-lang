@@ -8,6 +8,7 @@
 * Usage: (1) $ lex lexer.l
 *        (2) $ yacc parser.y -d -v -g
 *        (3) $ gcc lex.yy.c y.tab.c -o parser.exe
+*        (4) $ ./parser.exe < simple.e
 ```
 
 Membros:
