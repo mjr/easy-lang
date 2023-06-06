@@ -42,32 +42,32 @@
      ID = 258,
      TYPE = 259,
      NUMBER = 260,
-     FUNCTION = 261,
-     PROCEDURE = 262,
-     BEGIN_TOKEN = 263,
-     END_TOKEN = 264,
-     WHILE = 265,
-     DO = 266,
-     IF = 267,
-     THEN = 268,
-     ELSE = 269,
-     ASSIGN = 270
+     FUNC = 261,
+     ENDFUNC = 262,
+     WHILE = 263,
+     ENDWHILE = 264,
+     IF = 265,
+     ELSE = 266,
+     ENDIF = 267,
+     ASSIGNMENT = 268,
+     FOR = 269,
+     ENDFOR = 270
    };
 #endif
 /* Tokens.  */
 #define ID 258
 #define TYPE 259
 #define NUMBER 260
-#define FUNCTION 261
-#define PROCEDURE 262
-#define BEGIN_TOKEN 263
-#define END_TOKEN 264
-#define WHILE 265
-#define DO 266
-#define IF 267
-#define THEN 268
-#define ELSE 269
-#define ASSIGN 270
+#define FUNC 261
+#define ENDFUNC 262
+#define WHILE 263
+#define ENDWHILE 264
+#define IF 265
+#define ELSE 266
+#define ENDIF 267
+#define ASSIGNMENT 268
+#define FOR 269
+#define ENDFOR 270
 
 
 

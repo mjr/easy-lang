@@ -18,7 +18,7 @@ extern char * yytext;
 %token <sValue> ID
 %token <sValue> TYPE
 %token <iValue> NUMBER
-%token FUNCTION PROCEDURE BEGIN_TOKEN END_TOKEN WHILE DO IF THEN ELSE ASSIGN 
+%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR
 
 %type <sValue> corpo
 %type <sValue> procedimento
@@ -48,27 +48,27 @@ subp : funcao       {$$ = $1;}
      | procedimento {$$ = $1;}
      ;
 
-funcao : FUNCTION ID '(' args ')' ':' TYPE corpo {int n1 = strlen($2);
-                                                  int n2 = strlen($4);
-                                                  int n3 = strlen($7);
-                                                  int n4 = strlen($8);
+funcao : FUNC TYPE ID '(' args ')' corpo ENDFUNC {int n1 = strlen($3);
+                                                  int n2 = strlen($5);
+                                                  int n3 = strlen($2);
+                                                  int n4 = strlen($7);
                                                   char * s = malloc(sizeof(char)*(n1+n2+n3+n4+16));
-                                                  sprintf(s, "FUNCTION %s(%s) : %s %s", $2, $4, $7, $8);
+                                                  sprintf(s, "FUNC %s(%s) : %s %s", $3, $5, $2, $7);
+                                                  free($3);
+                                                  free($5);
                                                   free($2);
-                                                  free($4);
                                                   free($7);
-                                                  free($8);
                                                   $$ = s;}
        ;
 
-procedimento : PROCEDURE ID '(' args ')' corpo {int n1 = strlen($2);
+procedimento : FUNC ID '(' args ')' corpo ENDFUNC {int n1 = strlen($2);
                                                 int n2 = strlen($4);
                                                 int n3 = strlen($6);
                                                 char * s = malloc(sizeof(char)*(n1+n2+n3+14));
                                                 sprintf(s, "PROCEDURE %s() %s", $2, $6);
                                                 free($2);
                                                 free($6);
-                                                $$ = s;}
+                                                $$ = s;} 
              ;
 
 args :          {$$ = strdup("");}
@@ -107,7 +107,7 @@ ids_aux : ID             {$$ = $1;}
                           $$ = s;}
         ;
 
-corpo : BEGIN_TOKEN END_TOKEN {$$ = strdup("BEGIN END");} 
+corpo : FUNC ENDFUNC {$$ = strdup("xFUNC xENDFUNC");} 
       ;
 
 %%
