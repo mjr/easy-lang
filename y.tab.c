@@ -441,8 +441,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    37,    38,    47,    48,    51,    54,    64,
-      65,    68,    75,    86,    87,    90,    91,   100
+       0,    32,    32,    37,    38,    47,    48,    51,    64,    74,
+      75,    78,    85,    96,    97,   100,   101,   110
 };
 #endif
 
@@ -1396,11 +1396,21 @@ yyreduce:
 
   case 7:
 #line 51 "parser.y"
-    {}
+    {int n1 = strlen((yyvsp[(3) - (8)].sValue));
+                                                  int n2 = strlen((yyvsp[(5) - (8)].sValue));
+                                                  int n3 = strlen((yyvsp[(2) - (8)].sValue));
+                                                  int n4 = strlen((yyvsp[(7) - (8)].sValue));
+                                                  char * s = malloc(sizeof(char)*(n1+n2+n3+n4+16));
+                                                  sprintf(s, "FUNC %s(%s) : %s %s", (yyvsp[(3) - (8)].sValue), (yyvsp[(5) - (8)].sValue), (yyvsp[(2) - (8)].sValue), (yyvsp[(7) - (8)].sValue));
+                                                  free((yyvsp[(3) - (8)].sValue));
+                                                  free((yyvsp[(5) - (8)].sValue));
+                                                  free((yyvsp[(2) - (8)].sValue));
+                                                  free((yyvsp[(7) - (8)].sValue));
+                                                  (yyval.sValue) = s;}
     break;
 
   case 8:
-#line 54 "parser.y"
+#line 64 "parser.y"
     {int n1 = strlen((yyvsp[(2) - (7)].sValue));
                                                 int n2 = strlen((yyvsp[(4) - (7)].sValue));
                                                 int n3 = strlen((yyvsp[(6) - (7)].sValue));
@@ -1412,17 +1422,17 @@ yyreduce:
     break;
 
   case 9:
-#line 64 "parser.y"
+#line 74 "parser.y"
     {(yyval.sValue) = strdup("");}
     break;
 
   case 10:
-#line 65 "parser.y"
+#line 75 "parser.y"
     {(yyval.sValue) = (yyvsp[(1) - (1)].sValue);}
     break;
 
   case 11:
-#line 68 "parser.y"
+#line 78 "parser.y"
     {int n1 = strlen((yyvsp[(1) - (2)].sValue));
                                    int n2 = strlen((yyvsp[(2) - (2)].sValue));
                                    char * s = malloc(sizeof(char) * (n1+n2+2));
@@ -1433,7 +1443,7 @@ yyreduce:
     break;
 
   case 12:
-#line 75 "parser.y"
+#line 85 "parser.y"
     {int n1 = strlen((yyvsp[(1) - (4)].sValue));
                                   int n2 = strlen((yyvsp[(2) - (4)].sValue));
                                   int n3 = strlen((yyvsp[(4) - (4)].sValue));
@@ -1446,22 +1456,22 @@ yyreduce:
     break;
 
   case 13:
-#line 86 "parser.y"
+#line 96 "parser.y"
     {(yyval.sValue) = strdup("");}
     break;
 
   case 14:
-#line 87 "parser.y"
+#line 97 "parser.y"
     {(yyval.sValue) = (yyvsp[(1) - (1)].sValue);}
     break;
 
   case 15:
-#line 90 "parser.y"
+#line 100 "parser.y"
     {(yyval.sValue) = (yyvsp[(1) - (1)].sValue);}
     break;
 
   case 16:
-#line 91 "parser.y"
+#line 101 "parser.y"
     {int n1 = strlen((yyvsp[(1) - (3)].sValue));
                           int n2 = strlen((yyvsp[(3) - (3)].sValue));
                           char * s = malloc(sizeof(char) * (n1+n2+3));
@@ -1472,13 +1482,13 @@ yyreduce:
     break;
 
   case 17:
-#line 100 "parser.y"
+#line 110 "parser.y"
     {(yyval.sValue) = strdup("xFUNC xENDFUNC");}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1482 "y.tab.c"
+#line 1492 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1692,7 +1702,7 @@ yyreturn:
 }
 
 
-#line 103 "parser.y"
+#line 113 "parser.y"
 
 
 int main (void) {

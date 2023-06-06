@@ -1,4 +1,4 @@
-func int soma(int a, int b, float c)
+func int soma(int a, b; float c)
 
 endfunc
 

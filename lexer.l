@@ -27,7 +27,7 @@
 ";"                    {return(yytext[0]);}
 "["                    {printf("LBRACKET\n");}
 "]"                    {printf("RBRACKET\n");}
-","                    {printf("COMMA\n");}
+","                    {return(yytext[0]);}
 "="                    {return ASSIGNMENT;}
 "+"                    {printf("OP_PLUS\n");}
 "-"                    {printf("OP_MINUS\n");}
