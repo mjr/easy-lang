@@ -1,5 +1,8 @@
 %{
   #include <stdio.h>
+  #include "y.tab.h"
+
+  extern int yyerror (char *msg);
 %}
 
 %%
@@ -62,8 +65,3 @@
 #ifndef yywrap
   int yywrap (void) {return 1;}
 #endif
-
-int main(void) {
-  yylex();
-  return 0;
-}
