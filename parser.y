@@ -29,42 +29,42 @@ extern char * yytext;
 %start programa
 
 %%
-programa : subps corpo {printf("%s%s\n", $1, $2);
+programa : subps corpo {/*printf("%s%s\n", $1, $2);
                         free($1);
-                        free($2);}
+                        free($2);*/}
     ;
 
 subps :             {$$ = strdup("");} 
-       | subp subps {int n1 = strlen($1);
+       | subp subps {/*int n1 = strlen($1);
                      int n2 = strlen($2);
                      char * s = malloc(sizeof(char)*(n1+n2+2));
                      sprintf(s, "%s\n%s", $1, $2);
                      free($1);
                      free($2);
-                     $$ = s;}
+                     $$ = s;*/}
       ;
 
 subp : funcao       {$$ = $1;}
      | procedimento {$$ = $1;}
      ;
 
-funcao : FUNC TYPE ID '(' args ')' corpo ENDFUNC {int n1 = strlen($3);
+funcao : FUNC TYPE ID '(' args ')' corpo ENDFUNC  {/*int n1 = strlen($3);
                                                   int n2 = strlen($5);
                                                   int n3 = strlen($2);
                                                   int n4 = strlen($7);
-                                                  char * s = malloc(sizeof(char)*(n1+n2+n3+n4+16));
+                                                  char * s = malloc(sizeof(char)*(n1+n2+n3+n4+12));
                                                   sprintf(s, "FUNC %s(%s) : %s %s", $3, $5, $2, $7);
                                                   free($3);
                                                   free($5);
                                                   free($2);
                                                   free($7);
-                                                  $$ = s;}
+                                                  $$ = s;*/}
        ;
 
-procedimento : FUNC ID '(' args ')' corpo ENDFUNC {int n1 = strlen($2);
+procedimento : FUNC ID '(' args ')' corpo       {int n1 = strlen($2);
                                                 int n2 = strlen($4);
                                                 int n3 = strlen($6);
-                                                char * s = malloc(sizeof(char)*(n1+n2+n3+14));
+                                                char * s = malloc(sizeof(char)*(n1+n2+n3));
                                                 sprintf(s, "PROCEDURE %s() %s", $2, $6);
                                                 free($2);
                                                 free($6);
@@ -107,8 +107,17 @@ ids_aux : ID             {$$ = $1;}
                           $$ = s;}
         ;
 
-corpo : FUNC ENDFUNC {$$ = strdup("xFUNC xENDFUNC");} 
+corpo : var_declarations {} 
+        | 
       ;
+
+var_declarations : TYPE var_list ;
+
+var_list : variable ',' var_list
+        | variable
+        ;
+
+variable : ID ;
 
 %%
 

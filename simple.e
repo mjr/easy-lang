@@ -1,11 +1,4 @@
 func int soma(int a, b; float c)
-
+int a
 endfunc
 
-func exiba()
-
-endfunc
-
-func main()
-
-endfunc
