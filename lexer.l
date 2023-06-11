@@ -29,19 +29,19 @@
 "]"                    {printf("RBRACKET\n");}
 ","                    {return(yytext[0]);}
 "="                    {return ASSIGNMENT;}
-"+"                    {printf("OP_PLUS\n");}
+"+"                    {return OP_PLUS;}
 "-"                    {printf("OP_MINUS\n");}
 "*"                    {printf("OP_MULT\n");}
 "/"                    {printf("OP_DIV\n");}
-"=="                   {printf("EQUALS\n");}
-"!="                   {printf("NOT_EQUALS\n");}
-">"                    {printf("GREATER_THAN\n");}
-"<"                    {printf("LESS_THAN\n");}
-">="                   {printf("GREATER_THAN_OR_EQUAL\n");}
-"<="                   {printf("LESS_THAN_OR_EQUAL\n");}
+"=="                   {return EQUALS;}
+"!="                   {return NOT_EQUALS;}
+">"                    {return GREATER_THAN;}
+"<"                    {return LESS_THAN;}
+">="                   {return GREATER_THAN_OR_EQUAL;}
+"<="                   {return LESS_THAN_OR_EQUAL;}
 "++"                   {printf("INCREMENT\n");}
 "--"                   {printf("DECREMENT\n");}
-"+="                   {printf("ADITION_ASSIGNMENT\n");}
+"+="                   {return ADITION_ASSIGNMENT;}
 "-="                   {printf("SUBTRACTION_ASSIGNMENT\n");}
 "and"                  {printf("LOGICAL_AND\n");}
 "or"                   {printf("LOGICAL_OR\n");}

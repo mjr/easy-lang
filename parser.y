@@ -16,15 +16,16 @@ extern char * yytext;
 };
 
 %token <sValue> ID
-%token <sValue> TYPE
+%token <sValue> TYPE 
 %token <iValue> NUMBER
-%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR
+%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL ADITION_ASSIGNMENT OP_PLUS
 
 %type <sValue> corpo
 %type <sValue> procedimento
 %type <sValue> funcao
 %type <sValue> subp
 %type <sValue> subps args args_aux ids ids_aux
+
 
 %start programa
 
@@ -107,9 +108,23 @@ ids_aux : ID             {$$ = $1;}
                           $$ = s;}
         ;
 
-corpo : var_declarations {} 
-        | 
-      ;
+//corpo : var_declarations {}    dessa forma o corpo da função só poderia ter declaração de variáveis OU declaração de método. 
+//        | method_declaration
+//	|  
+//      ;
+
+corpo : blocks
+      |
+	;
+
+blocks : block
+       | block blocks
+	;
+
+block : var_declarations
+      | method_declaration
+	| instructions
+	;
 
 var_declarations : TYPE var_list ;
 
@@ -117,7 +132,48 @@ var_list : variable ',' var_list
         | variable
         ;
 
-variable : ID ;
+variable : ID
+	| ID ASSIGNMENT NUMBER 	
+ ;
+
+method_declaration : while_loop ;
+//		| for_loop
+//		;
+
+while_loop : WHILE '(' ID logic_operator NUMBER ')' instructions ENDWHILE ;
+	
+
+instructions: var_declarations
+          | aritimetic_operations
+	  | direct_assignment
+          ;
+//	  | logical_operations
+
+direct_assignment : ID ASSIGNMENT NUMBER ;
+
+aritimetic_operations : sum 
+		| ID ASSIGNMENT sum		      
+		;
+//		| subtraction
+//		| multiplication
+//		| division
+//		;
+
+
+
+sum : ID OP_PLUS NUMBER
+    | ID OP_PLUS ID
+    | ID ADITION_ASSIGNMENT NUMBER
+    ;
+
+logic_operator : EQUALS
+               | NOT_EQUALS
+                |GREATER_THAN
+                |LESS_THAN
+                |GREATER_THAN_OR_EQUAL
+                |LESS_THAN_OR_EQUAL
+                ;
+
 
 %%
 
