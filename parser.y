@@ -124,6 +124,8 @@ blocks : block
 block : var_declarations
       | method_declaration
 	| instructions
+  | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
+  | for_loop
 	;
 
 var_declarations : TYPE var_list ;
@@ -147,7 +149,18 @@ while_loop : WHILE '(' ID logic_operator NUMBER ')' instructions ENDWHILE ;
 instructions: var_declarations
           | aritimetic_operations
 	  | direct_assignment
+    | if_statement
+    | for_loop
           ;
+
+if_statement : IF '(' ID logic_operator NUMBER ')' instructions ENDIF
+             | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
+             ;
+
+for_loop : FOR '(' ID ASSIGNMENT NUMBER ';' ID logic_operator NUMBER ';' ID ADITION_ASSIGNMENT NUMBER ')' instructions ENDFOR
+         ;
+
+
 //	  | logical_operations
 
 direct_assignment : ID ASSIGNMENT NUMBER ;
