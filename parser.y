@@ -134,6 +134,7 @@ var_list : variable ',' var_list
 
 variable : ID
 	| ID ASSIGNMENT NUMBER 	
+  | ID ASSIGNMENT ID
  ;
 
 method_declaration : while_loop ;
