@@ -121,8 +121,6 @@ blocks : block
 block : var_declarations
       | method_declaration
 	    | instructions
-      | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
-      | for_loop
 	;
 
 var_declarations : TYPE var_list ;
@@ -147,13 +145,9 @@ logical_expression :  logical_expression LESS_THAN logical_expression
                     | logical_expression EQUALS logical_expression
                     | logical_expression LESS_THAN_OR_EQUAL logical_expression
                     | logical_expression GREATER_THAN_OR_EQUAL logical_expression
-                    | equality_expression
                     | aritimetic_expression
                     ;
 
-equality_expression : equality_expression
-                    | equality_expression LOGICAL_AND equality_expression
-                    ;
 
 aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
                       | aritimetic_expression OP_MINUS aritimetic_expression
@@ -163,22 +157,31 @@ aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
                       | ID
                       ;
 
-method_declaration : while_loop ;
-//		| for_loop
-//		;
+method_declaration : while_loop 
+		                | for_loop
+		;
 
-while_loop : WHILE '(' expression ')' instructions ENDWHILE ;
-	
+while_loop : WHILE '(' conditions ')' corpo ENDWHILE ;
+
+
+conditions : expression
+            | expression relational_expression expression
+            ;
+
+relational_expression : LOGICAL_AND
+                      | LOGICAL_OR
+                      ;
 
 instructions: var_declarations
             | aritimetic_operations
 	          | direct_assignment
             | if_statement
             | for_loop
+            |
           ;
 
-if_statement : IF '(' ID logic_operator NUMBER ')' instructions ENDIF
-             | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
+if_statement : IF '(' conditions ')' instructions ENDIF
+             | IF '(' conditions ')' instructions ELSE instructions ENDIF
              ;
 
 for_loop : FOR '(' ID ASSIGNMENT expression ';' ID logic_operator expression ';' ID unary_op ')' corpo ENDFOR
@@ -195,6 +198,7 @@ unary_op : ADITION_ASSIGNMENT
 
 direct_assignment : ID ASSIGNMENT expression 
                   | ID LBRACKET ID RBRACKET ASSIGNMENT expression
+                  | ID unary_op
                   ;
 
 aritimetic_operations : sum 
