@@ -18,7 +18,9 @@ extern char * yytext;
 %token <sValue> ID
 %token <sValue> TYPE 
 %token <iValue> NUMBER
-%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL ADITION_ASSIGNMENT OP_PLUS
+%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
+NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
+OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR
 
 %type <sValue> corpo
 %type <sValue> procedimento
@@ -108,13 +110,8 @@ ids_aux : ID             {$$ = $1;}
                           $$ = s;}
         ;
 
-//corpo : var_declarations {}    dessa forma o corpo da função só poderia ter declaração de variáveis OU declaração de método. 
-//        | method_declaration
-//	|  
-//      ;
-
 corpo : blocks
-      |
+      | 
 	;
 
 blocks : block
@@ -123,9 +120,9 @@ blocks : block
 
 block : var_declarations
       | method_declaration
-	| instructions
-  | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
-  | for_loop
+	    | instructions
+      | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
+      | for_loop
 	;
 
 var_declarations : TYPE var_list ;
@@ -135,35 +132,70 @@ var_list : variable ',' var_list
         ;
 
 variable : ID
-	| ID ASSIGNMENT NUMBER 	
-  | ID ASSIGNMENT ID
+        | ID LBRACKET ID RBRACKET 
+        | ID ASSIGNMENT expression
+        | ID LBRACKET ID RBRACKET ASSIGNMENT expression
  ;
+
+expression : ID ASSIGNMENT expression
+            | logical_expression
+            | ID LBRACKET expression RBRACKET
+            ;
+
+logical_expression :  logical_expression LESS_THAN logical_expression
+                    | logical_expression GREATER_THAN logical_expression
+                    | logical_expression EQUALS logical_expression
+                    | logical_expression LESS_THAN_OR_EQUAL logical_expression
+                    | logical_expression GREATER_THAN_OR_EQUAL logical_expression
+                    | equality_expression
+                    | aritimetic_expression
+                    ;
+
+equality_expression : equality_expression
+                    | equality_expression LOGICAL_AND equality_expression
+                    ;
+
+aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
+                      | aritimetic_expression OP_MINUS aritimetic_expression
+                      | aritimetic_expression OP_DIV aritimetic_expression
+                      | aritimetic_expression OP_MULT aritimetic_expression
+                      | NUMBER
+                      | ID
+                      ;
 
 method_declaration : while_loop ;
 //		| for_loop
 //		;
 
-while_loop : WHILE '(' ID logic_operator NUMBER ')' instructions ENDWHILE ;
+while_loop : WHILE '(' expression ')' instructions ENDWHILE ;
 	
 
 instructions: var_declarations
-          | aritimetic_operations
-	  | direct_assignment
-    | if_statement
-    | for_loop
+            | aritimetic_operations
+	          | direct_assignment
+            | if_statement
+            | for_loop
           ;
 
 if_statement : IF '(' ID logic_operator NUMBER ')' instructions ENDIF
              | IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF
              ;
 
-for_loop : FOR '(' ID ASSIGNMENT NUMBER ';' ID logic_operator NUMBER ';' ID ADITION_ASSIGNMENT NUMBER ')' instructions ENDFOR
+for_loop : FOR '(' ID ASSIGNMENT expression ';' ID logic_operator expression ';' ID unary_op ')' corpo ENDFOR
          ;
 
 
+unary_op : ADITION_ASSIGNMENT
+        | INCREMENT
+        | DECREMENT
+        | SUBTRACTION_ASSIGNMENT
+        ;
+
 //	  | logical_operations
 
-direct_assignment : ID ASSIGNMENT NUMBER ;
+direct_assignment : ID ASSIGNMENT expression 
+                  | ID LBRACKET ID RBRACKET ASSIGNMENT expression
+                  ;
 
 aritimetic_operations : sum 
 		| ID ASSIGNMENT sum		      

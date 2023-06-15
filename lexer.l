@@ -25,26 +25,26 @@
 "("                    {return(yytext[0]);}
 ")"                    {return(yytext[0]);}
 ";"                    {return(yytext[0]);}
-"["                    {printf("LBRACKET\n");}
-"]"                    {printf("RBRACKET\n");}
+"["                    {return LBRACKET;}
+"]"                    {return RBRACKET;}
 ","                    {return(yytext[0]);}
 "="                    {return ASSIGNMENT;}
 "+"                    {return OP_PLUS;}
-"-"                    {printf("OP_MINUS\n");}
-"*"                    {printf("OP_MULT\n");}
-"/"                    {printf("OP_DIV\n");}
+"-"                    {return OP_MINUS;}
+"*"                    {return OP_MULT;}
+"/"                    {return OP_DIV;}
 "=="                   {return EQUALS;}
 "!="                   {return NOT_EQUALS;}
 ">"                    {return GREATER_THAN;}
 "<"                    {return LESS_THAN;}
 ">="                   {return GREATER_THAN_OR_EQUAL;}
 "<="                   {return LESS_THAN_OR_EQUAL;}
-"++"                   {printf("INCREMENT\n");}
-"--"                   {printf("DECREMENT\n");}
+"++"                   {return INCREMENT;}
+"--"                   {return DECREMENT;}
 "+="                   {return ADITION_ASSIGNMENT;}
-"-="                   {printf("SUBTRACTION_ASSIGNMENT\n");}
-"and"                  {printf("LOGICAL_AND\n");}
-"or"                   {printf("LOGICAL_OR\n");}
+"-="                   {return SUBTRACTION_ASSIGNMENT;}
+"and"                  {return LOGICAL_AND;}
+"or"                   {return LOGICAL_OR;}
 "not"                  {printf("LOGICAL_NOT\n");}
 "const"                {printf("CONSTANT_VALUE\n");}
 "global"               {printf("GLOBAL_VALUE\n");}
