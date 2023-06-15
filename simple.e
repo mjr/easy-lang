@@ -9,6 +9,7 @@ a = a + a
 while (a < 10)
 	a += 1
 endwhile
+
 endfunc 
 
 func int merge(int arr; int left; int midle; int right)
@@ -36,14 +37,12 @@ index_merged = 0
 while(index_left < size_left and index_right < size_right )
     
     if(left_array<= right_array)
-
+    int a
     else
         left_array = 2
     endif
 
     index_merged++
 endwhile
-
-
 
 endfunc

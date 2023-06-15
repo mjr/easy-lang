@@ -118,12 +118,9 @@ blocks : block
        | block blocks
 	;
 
-block : //var_declarations //COMENTADO PARA SOLUCIONAR CONFLITO DE REDUCAO/REDUCAO
-       method_declaration
+block : method_declaration
 	    | instructions
-      //| IF '(' ID logic_operator NUMBER ')' instructions ELSE instructions ENDIF //COMENTADO PARA SOLUCIONAR CONFLITO DE REDUCAO/REDUCAO
-      //| for_loop //COMENTADO PARA SOLUCIONAR CONFLITO DE REDUCAO/REDUCAO
-	;
+      ;
 
 var_declarations : TYPE var_list ;
 
@@ -178,8 +175,6 @@ instructions: var_declarations
             | aritimetic_operations
 	          | direct_assignment
             | if_statement
-            | for_loop
-            |
           ;
 
 if_statement : IF '(' conditions ')' instructions ENDIF

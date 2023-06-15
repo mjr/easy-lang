@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_PARSER_TAB_H_INCLUDED
+# define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -82,38 +82,6 @@ extern int yydebug;
     LOGICAL_OR = 288
   };
 #endif
-/* Tokens.  */
-#define ID 258
-#define TYPE 259
-#define NUMBER 260
-#define FUNC 261
-#define ENDFUNC 262
-#define WHILE 263
-#define ENDWHILE 264
-#define IF 265
-#define ELSE 266
-#define ENDIF 267
-#define ASSIGNMENT 268
-#define FOR 269
-#define ENDFOR 270
-#define EQUALS 271
-#define NOT_EQUALS 272
-#define GREATER_THAN 273
-#define LESS_THAN 274
-#define GREATER_THAN_OR_EQUAL 275
-#define LESS_THAN_OR_EQUAL 276
-#define OP_PLUS 277
-#define OP_MINUS 278
-#define OP_DIV 279
-#define OP_MULT 280
-#define LBRACKET 281
-#define RBRACKET 282
-#define DECREMENT 283
-#define INCREMENT 284
-#define SUBTRACTION_ASSIGNMENT 285
-#define ADITION_ASSIGNMENT 286
-#define LOGICAL_AND 287
-#define LOGICAL_OR 288
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -125,7 +93,7 @@ union YYSTYPE
   char   cValue;  /* char value */
   char * sValue;  /* string value */
 
-#line 129 "y.tab.h"
+#line 97 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -138,4 +106,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
