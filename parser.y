@@ -118,9 +118,16 @@ blocks : block
        | block blocks
 	;
 
-block : method_declaration
-	    | instructions
+block :  instructions
       ;
+
+instructions: var_declarations
+            | aritimetic_operations
+            | direct_assignment
+            | if_statement
+            | while_loop
+            | for_loop
+          ;
 
 var_declarations : TYPE var_list ;
 
@@ -135,16 +142,18 @@ variable : ID
  ;
 
 expression : ID ASSIGNMENT expression
-            | logical_expression
             | ID LBRACKET expression RBRACKET
+            | logical_expression
+            | aritimetic_expression
             ;
+
+
 
 logical_expression :  logical_expression LESS_THAN logical_expression
                     | logical_expression GREATER_THAN logical_expression
                     | logical_expression EQUALS logical_expression
                     | logical_expression LESS_THAN_OR_EQUAL logical_expression
                     | logical_expression GREATER_THAN_OR_EQUAL logical_expression
-                    | aritimetic_expression
                     ;
 
 
@@ -156,9 +165,6 @@ aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
                       | ID
                       ;
 
-method_declaration : while_loop 
-		                | for_loop
-		;
 
 while_loop : WHILE '(' conditions ')' corpo ENDWHILE ;
 
@@ -171,11 +177,7 @@ relational_expression : LOGICAL_AND
                       | LOGICAL_OR
                       ;
 
-instructions: var_declarations
-            | aritimetic_operations
-	          | direct_assignment
-            | if_statement
-          ;
+
 
 if_statement : IF '(' conditions ')' instructions ENDIF
              | IF '(' conditions ')' instructions ELSE instructions ENDIF
