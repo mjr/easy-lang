@@ -8,6 +8,7 @@ int yylex(void);
 int yyerror(char *s);
 extern int yylineno;
 extern char * yytext;
+extern FILE * yyin, * yyout;
 %}
 
 //char * cat(char *, char *, char *, char *, char *);
@@ -21,7 +22,7 @@ extern char * yytext;
 
 %token <sValue> ID
 %token <sValue> TYPE 
-%token <iValue> NUMBER
+%token <sValue> NUMBER
 %token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
 OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR
@@ -30,7 +31,7 @@ OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADIT
 %type <rec> procedimento
 %type <rec> funcao
 %type <rec> subp expression
-%type <rec> subps args args_aux ids ids_aux var_declarations var_list variable
+%type <rec> subps args args_aux var_declarations var_list variable conditional_if
 
 
 %start programa
@@ -50,39 +51,34 @@ subp : funcao       {}
 funcao : FUNC TYPE ID '(' args ')' instructions ENDFUNC  {}
        ;
 
-procedimento : FUNC ID '(' args ')' instructions       {} 
+procedimento : FUNC ID '(' args ')' instructions ENDFUNC {} 
              ;
 
-args :          {}
-     | args_aux {}
+args :             {}
+        | args_aux {}
      ;
 
-args_aux : TYPE ids               {}
-         | TYPE ids ';' args_aux {}
+args_aux :    TYPE ID               {}
+            | TYPE ID LBRACKET RBRACKET ',' args_aux  {}
+            | TYPE ID ',' args_aux  {}
          ;
 
-ids :         {}
-    | ids_aux {}
-    ;
 
-ids_aux : ID             {}
-        | ID ',' ids_aux {}
-        ;
+instructions:   {}
+              | var_declarations instructions {}
+              | direct_assignment instructions {}
+              | unary_op instructions {}
+              | conditional_if instructions {}
+              | while_loop instructions {}
+              | for_loop instructions {}
 
-
-instructions:   var_declarations
-//            | aritimetic_operations
-//            | direct_assignment
-//            | if_statement
-//            | while_loop
-//            | for_loop
           ;
 
 var_declarations : TYPE var_list {} ;
 
 var_list : variable ',' var_list
-        | variable
-        ;
+          | variable
+          ;
 
 variable : ID                        {}
         | ID LBRACKET ID RBRACKET   {}
@@ -90,90 +86,43 @@ variable : ID                        {}
         | ID LBRACKET ID RBRACKET ASSIGNMENT expression  {}
  ;
 
-expression : ID ASSIGNMENT expression  {$$ = createRecord("","");}
-            | ID LBRACKET expression RBRACKET {}
-            | ID {}
-//            | logical_expression  {}
-//            | aritimetic_expression  {}
+expression : ID {}
+            | ID ASSIGNMENT expression  {}
+            | ID OP_PLUS expression {}
+            | ID OP_MINUS expression {}
+            | ID OP_DIV expression {}
+            | ID OP_MULT expression {}
+
+            | ID LESS_THAN expression {}
+            | ID GREATER_THAN expression {}
+            | ID EQUALS expression {}
+            | ID LESS_THAN_OR_EQUAL expression {}
+            | ID GREATER_THAN_OR_EQUAL expression {}
+            | ID NOT_EQUALS expression {}
+            
+
+            | ID LOGICAL_AND expression {}
+            | ID LOGICAL_OR expression {}
+            
             ;
 
+direct_assignment : ID ASSIGNMENT expression {}
+      ;
+
+unary_op :  ID ADITION_ASSIGNMENT
+          | ID INCREMENT
+          | ID DECREMENT
+          | ID SUBTRACTION_ASSIGNMENT
+  ;
 
 
-/*logical_expression :  logical_expression LESS_THAN logical_expression
-                    | logical_expression GREATER_THAN logical_expression
-                    | logical_expression EQUALS logical_expression
-                    | logical_expression LESS_THAN_OR_EQUAL logical_expression
-                    | logical_expression GREATER_THAN_OR_EQUAL logical_expression
-                    | ID
-                    | NUMBER
-                    ;
+conditional_if : IF '(' expression ')' instructions ENDIF {}
+                | IF '(' expression ')' instructions ELSE instructions ENDIF {}
 
+while_loop : WHILE '(' expression ')' instructions ENDWHILE {};
 
-aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
-                      | aritimetic_expression OP_MINUS aritimetic_expression
-                      | aritimetic_expression OP_DIV aritimetic_expression
-                      | aritimetic_expression OP_MULT aritimetic_expression
-                      ;
+for_loop : FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR; // validar o var_declarations com o professor
 
-
-while_loop : WHILE '(' conditions ')' corpo ENDWHILE ;
-
-
-conditions : expression
-            | expression relational_expression expression
-            ;
-
-relational_expression : LOGICAL_AND
-                      | LOGICAL_OR
-                      ;
-
-
-
-if_statement : IF '(' conditions ')' instructions ENDIF
-             | IF '(' conditions ')' instructions ELSE instructions ENDIF
-             ;
-
-for_loop : FOR '(' ID ASSIGNMENT expression ';' ID logic_operator expression ';' ID unary_op ')' corpo ENDFOR
-         ;
-
-
-unary_op : ADITION_ASSIGNMENT
-        | INCREMENT
-        | DECREMENT
-        | SUBTRACTION_ASSIGNMENT
-        ;
-
-//	  | logical_operations
-
-direct_assignment : ID ASSIGNMENT expression 
-                  | ID LBRACKET ID RBRACKET ASSIGNMENT expression
-                  | ID unary_op
-                  ;
-
-aritimetic_operations : sum 
-		| ID ASSIGNMENT sum		      
-		;
-//		| subtraction
-//		| multiplication
-//		| division
-//		;
-
-
-
-sum : ID OP_PLUS NUMBER
-    | ID OP_PLUS ID
-    | ID ADITION_ASSIGNMENT NUMBER
-    ;
-
-logic_operator : EQUALS
-               | NOT_EQUALS
-                |GREATER_THAN
-                |LESS_THAN
-                |GREATER_THAN_OR_EQUAL
-                |LESS_THAN_OR_EQUAL
-                ;
-
-*/
 %%
 
 int main (void) {

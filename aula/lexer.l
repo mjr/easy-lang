@@ -7,8 +7,10 @@
 
 %%
 
-[ \t\n]                ;
-[0-9]+                 {yylval.iValue = atoi(yytext); return NUMBER;}
+[ \t]                   ;
+\n                     {yylineno++;}
+[0-9]+                 {yylval.sValue = strdup(yytext); 
+                         return ID;}
 [0-9]\.[0-9]+	         {printf("FLOAT_NUMBER (%s)\n",yytext);}
 "func"                 {return(FUNC);}
 "endfunc"              {return(ENDFUNC);}
