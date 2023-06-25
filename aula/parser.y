@@ -22,10 +22,11 @@ extern FILE * yyin, * yyout;
 
 %token <sValue> ID
 %token <sValue> TYPE 
-%token <sValue> NUMBER
+%token <sValue> NUMBER 
+%token <sValue> STRING 
 %token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
-OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR
+OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT
 
 %type <rec> instructions
 %type <rec> procedimento
@@ -71,7 +72,7 @@ instructions:   {}
               | conditional_if instructions {}
               | while_loop instructions {}
               | for_loop instructions {}
-
+	      | print instructions {}
           ;
 
 var_declarations : TYPE var_list {} ;
@@ -122,6 +123,17 @@ conditional_if : IF '(' expression ')' instructions ENDIF {}
 while_loop : WHILE '(' expression ')' instructions ENDWHILE {};
 
 for_loop : FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR; // validar o var_declarations com o professor
+
+print : PRINT '(' texts ')' {} ;
+
+texts :  text {}
+      | text ',' texts {}
+;
+text :   {}
+	| STRING {} 
+	| ID {}     
+;
+
 
 %%
 

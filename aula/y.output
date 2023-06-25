@@ -1,15 +1,15 @@
-Terminals unused in grammar
+Terminais sem uso na gramática
 
     NUMBER
 
 
-Grammar
+Gramática
 
     0 $accept: programa $end
 
     1 programa: subps instructions
 
-    2 subps: %empty
+    2 subps: ε
     3      | subp subps
 
     4 subp: funcao
@@ -19,1302 +19,1457 @@ Grammar
 
     7 procedimento: FUNC ID '(' args ')' instructions ENDFUNC
 
-    8 args: %empty
+    8 args: ε
     9     | args_aux
 
    10 args_aux: TYPE ID
    11         | TYPE ID LBRACKET RBRACKET ',' args_aux
    12         | TYPE ID ',' args_aux
 
-   13 instructions: %empty
+   13 instructions: ε
    14             | var_declarations instructions
    15             | direct_assignment instructions
    16             | unary_op instructions
    17             | conditional_if instructions
    18             | while_loop instructions
    19             | for_loop instructions
+   20             | print instructions
 
-   20 var_declarations: TYPE var_list
+   21 var_declarations: TYPE var_list
 
-   21 var_list: variable ',' var_list
-   22         | variable
+   22 var_list: variable ',' var_list
+   23         | variable
 
-   23 variable: ID
-   24         | ID LBRACKET ID RBRACKET
-   25         | ID ASSIGNMENT expression
-   26         | ID LBRACKET ID RBRACKET ASSIGNMENT expression
+   24 variable: ID
+   25         | ID LBRACKET ID RBRACKET
+   26         | ID ASSIGNMENT expression
+   27         | ID LBRACKET ID RBRACKET ASSIGNMENT expression
 
-   27 expression: ID
-   28           | ID ASSIGNMENT expression
-   29           | ID OP_PLUS expression
-   30           | ID OP_MINUS expression
-   31           | ID OP_DIV expression
-   32           | ID OP_MULT expression
-   33           | ID LESS_THAN expression
-   34           | ID GREATER_THAN expression
-   35           | ID EQUALS expression
-   36           | ID LESS_THAN_OR_EQUAL expression
-   37           | ID GREATER_THAN_OR_EQUAL expression
-   38           | ID NOT_EQUALS expression
-   39           | ID LOGICAL_AND expression
-   40           | ID LOGICAL_OR expression
+   28 expression: ID
+   29           | ID ASSIGNMENT expression
+   30           | ID OP_PLUS expression
+   31           | ID OP_MINUS expression
+   32           | ID OP_DIV expression
+   33           | ID OP_MULT expression
+   34           | ID LESS_THAN expression
+   35           | ID GREATER_THAN expression
+   36           | ID EQUALS expression
+   37           | ID LESS_THAN_OR_EQUAL expression
+   38           | ID GREATER_THAN_OR_EQUAL expression
+   39           | ID NOT_EQUALS expression
+   40           | ID LOGICAL_AND expression
+   41           | ID LOGICAL_OR expression
 
-   41 direct_assignment: ID ASSIGNMENT expression
+   42 direct_assignment: ID ASSIGNMENT expression
 
-   42 unary_op: ID ADITION_ASSIGNMENT
-   43         | ID INCREMENT
-   44         | ID DECREMENT
-   45         | ID SUBTRACTION_ASSIGNMENT
+   43 unary_op: ID ADITION_ASSIGNMENT
+   44         | ID INCREMENT
+   45         | ID DECREMENT
+   46         | ID SUBTRACTION_ASSIGNMENT
 
-   46 conditional_if: IF '(' expression ')' instructions ENDIF
-   47               | IF '(' expression ')' instructions ELSE instructions ENDIF
+   47 conditional_if: IF '(' expression ')' instructions ENDIF
+   48               | IF '(' expression ')' instructions ELSE instructions ENDIF
 
-   48 while_loop: WHILE '(' expression ')' instructions ENDWHILE
+   49 while_loop: WHILE '(' expression ')' instructions ENDWHILE
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
+   50 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
+
+   51 print: PRINT '(' texts ')'
+
+   52 texts: text
+   53      | text ',' texts
+
+   54 text: ε
+   55     | STRING
+   56     | ID
 
 
-Terminals, with rules where they appear
+Terminais, com as regras onde eles aparecem
 
     $end (0) 0
-    '(' (40) 6 7 46 47 48 49
-    ')' (41) 6 7 46 47 48 49
-    ',' (44) 11 12 21
-    ';' (59) 49
+    '(' (40) 6 7 47 48 49 50 51
+    ')' (41) 6 7 47 48 49 50 51
+    ',' (44) 11 12 22 53
+    ';' (59) 50
     error (256)
-    ID <sValue> (258) 6 7 10 11 12 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45
-    TYPE <sValue> (259) 6 10 11 12 20
+    ID <sValue> (258) 6 7 10 11 12 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 56
+    TYPE <sValue> (259) 6 10 11 12 21
     NUMBER <sValue> (260)
-    FUNC (261) 6 7
-    ENDFUNC (262) 6 7
-    WHILE (263) 48
-    ENDWHILE (264) 48
-    IF (265) 46 47
-    ELSE (266) 47
-    ENDIF (267) 46 47
-    ASSIGNMENT (268) 25 26 28 41
-    FOR (269) 49
-    ENDFOR (270) 49
-    EQUALS (271) 35
-    NOT_EQUALS (272) 38
-    GREATER_THAN (273) 34
-    LESS_THAN (274) 33
-    GREATER_THAN_OR_EQUAL (275) 37
-    LESS_THAN_OR_EQUAL (276) 36
-    OP_PLUS (277) 29
-    OP_MINUS (278) 30
-    OP_DIV (279) 31
-    OP_MULT (280) 32
-    LBRACKET (281) 11 24 26
-    RBRACKET (282) 11 24 26
-    DECREMENT (283) 44
-    INCREMENT (284) 43
-    SUBTRACTION_ASSIGNMENT (285) 45
-    ADITION_ASSIGNMENT (286) 42
-    LOGICAL_AND (287) 39
-    LOGICAL_OR (288) 40
-
-
-Nonterminals, with rules where they appear
-
-    $accept (38)
-        on left: 0
-    programa (39)
-        on left: 1
-        on right: 0
-    subps <rec> (40)
-        on left: 2 3
-        on right: 1 3
-    subp <rec> (41)
-        on left: 4 5
-        on right: 3
-    funcao <rec> (42)
-        on left: 6
-        on right: 4
-    procedimento <rec> (43)
-        on left: 7
-        on right: 5
-    args <rec> (44)
-        on left: 8 9
-        on right: 6 7
-    args_aux <rec> (45)
-        on left: 10 11 12
-        on right: 9 11 12
-    instructions <rec> (46)
-        on left: 13 14 15 16 17 18 19
-        on right: 1 6 7 14 15 16 17 18 19 46 47 48 49
-    var_declarations <rec> (47)
-        on left: 20
-        on right: 14 49
-    var_list <rec> (48)
-        on left: 21 22
-        on right: 20 21
-    variable <rec> (49)
-        on left: 23 24 25 26
-        on right: 21 22
-    expression <rec> (50)
-        on left: 27 28 29 30 31 32 33 34 35 36 37 38 39 40
-        on right: 25 26 28 29 30 31 32 33 34 35 36 37 38 39 40 41 46 47 48 49
-    direct_assignment (51)
-        on left: 41
-        on right: 15
-    unary_op (52)
-        on left: 42 43 44 45
-        on right: 16 49
-    conditional_if <rec> (53)
-        on left: 46 47
-        on right: 17
-    while_loop (54)
-        on left: 48
-        on right: 18
-    for_loop (55)
-        on left: 49
-        on right: 19
+    STRING <sValue> (261) 55
+    FUNC (262) 6 7
+    ENDFUNC (263) 6 7
+    WHILE (264) 49
+    ENDWHILE (265) 49
+    IF (266) 47 48
+    ELSE (267) 48
+    ENDIF (268) 47 48
+    ASSIGNMENT (269) 26 27 29 42
+    FOR (270) 50
+    ENDFOR (271) 50
+    EQUALS (272) 36
+    NOT_EQUALS (273) 39
+    GREATER_THAN (274) 35
+    LESS_THAN (275) 34
+    GREATER_THAN_OR_EQUAL (276) 38
+    LESS_THAN_OR_EQUAL (277) 37
+    OP_PLUS (278) 30
+    OP_MINUS (279) 31
+    OP_DIV (280) 32
+    OP_MULT (281) 33
+    LBRACKET (282) 11 25 27
+    RBRACKET (283) 11 25 27
+    DECREMENT (284) 45
+    INCREMENT (285) 44
+    SUBTRACTION_ASSIGNMENT (286) 46
+    ADITION_ASSIGNMENT (287) 43
+    LOGICAL_AND (288) 40
+    LOGICAL_OR (289) 41
+    PRINT (290) 51
+
+
+Não terminais com as regras onde eles aparecem
+
+    $accept (40)
+        à esquerda: 0
+    programa (41)
+        à esquerda: 1
+        à direita: 0
+    subps <rec> (42)
+        à esquerda: 2 3
+        à direita: 1 3
+    subp <rec> (43)
+        à esquerda: 4 5
+        à direita: 3
+    funcao <rec> (44)
+        à esquerda: 6
+        à direita: 4
+    procedimento <rec> (45)
+        à esquerda: 7
+        à direita: 5
+    args <rec> (46)
+        à esquerda: 8 9
+        à direita: 6 7
+    args_aux <rec> (47)
+        à esquerda: 10 11 12
+        à direita: 9 11 12
+    instructions <rec> (48)
+        à esquerda: 13 14 15 16 17 18 19 20
+        à direita: 1 6 7 14 15 16 17 18 19 20 47 48 49 50
+    var_declarations <rec> (49)
+        à esquerda: 21
+        à direita: 14 50
+    var_list <rec> (50)
+        à esquerda: 22 23
+        à direita: 21 22
+    variable <rec> (51)
+        à esquerda: 24 25 26 27
+        à direita: 22 23
+    expression <rec> (52)
+        à esquerda: 28 29 30 31 32 33 34 35 36 37 38 39 40 41
+        à direita: 26 27 29 30 31 32 33 34 35 36 37 38 39 40 41 42 47 48 49 50
+    direct_assignment (53)
+        à esquerda: 42
+        à direita: 15
+    unary_op (54)
+        à esquerda: 43 44 45 46
+        à direita: 16 50
+    conditional_if <rec> (55)
+        à esquerda: 47 48
+        à direita: 17
+    while_loop (56)
+        à esquerda: 49
+        à direita: 18
+    for_loop (57)
+        à esquerda: 50
+        à direita: 19
+    print (58)
+        à esquerda: 51
+        à direita: 20
+    texts (59)
+        à esquerda: 52 53
+        à direita: 51 53
+    text (60)
+        à esquerda: 54 55 56
+        à direita: 52 53
+
+
+Estado 0
+
+    0 $accept: • programa $end
 
+    FUNC  deslocar, e ir ao estado 1
 
-State 0
+    $padrão  reduzir usando a regra 2 (subps)
 
-    0 $accept: . programa $end
+    programa      ir ao estado 2
+    subps         ir ao estado 3
+    subp          ir ao estado 4
+    funcao        ir ao estado 5
+    procedimento  ir ao estado 6
 
-    FUNC  shift, and go to state 1
 
-    $default  reduce using rule 2 (subps)
+Estado 1
 
-    programa      go to state 2
-    subps         go to state 3
-    subp          go to state 4
-    funcao        go to state 5
-    procedimento  go to state 6
+    6 funcao: FUNC • TYPE ID '(' args ')' instructions ENDFUNC
+    7 procedimento: FUNC • ID '(' args ')' instructions ENDFUNC
 
+    ID    deslocar, e ir ao estado 7
+    TYPE  deslocar, e ir ao estado 8
 
-State 1
 
-    6 funcao: FUNC . TYPE ID '(' args ')' instructions ENDFUNC
-    7 procedimento: FUNC . ID '(' args ')' instructions ENDFUNC
+Estado 2
 
-    ID    shift, and go to state 7
-    TYPE  shift, and go to state 8
+    0 $accept: programa • $end
 
+    $end  deslocar, e ir ao estado 9
 
-State 2
 
-    0 $accept: programa . $end
+Estado 3
 
-    $end  shift, and go to state 9
+    1 programa: subps • instructions
 
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-State 3
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    1 programa: subps . instructions
+    instructions       ir ao estado 16
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
 
-    $default  reduce using rule 13 (instructions)
+Estado 4
 
-    instructions       go to state 15
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    3 subps: subp • subps
 
+    FUNC  deslocar, e ir ao estado 1
 
-State 4
+    $padrão  reduzir usando a regra 2 (subps)
 
-    3 subps: subp . subps
+    subps         ir ao estado 24
+    subp          ir ao estado 4
+    funcao        ir ao estado 5
+    procedimento  ir ao estado 6
 
-    FUNC  shift, and go to state 1
 
-    $default  reduce using rule 2 (subps)
+Estado 5
 
-    subps         go to state 22
-    subp          go to state 4
-    funcao        go to state 5
-    procedimento  go to state 6
+    4 subp: funcao •
 
+    $padrão  reduzir usando a regra 4 (subp)
 
-State 5
 
-    4 subp: funcao .
+Estado 6
 
-    $default  reduce using rule 4 (subp)
+    5 subp: procedimento •
 
+    $padrão  reduzir usando a regra 5 (subp)
 
-State 6
 
-    5 subp: procedimento .
+Estado 7
 
-    $default  reduce using rule 5 (subp)
+    7 procedimento: FUNC ID • '(' args ')' instructions ENDFUNC
 
+    '('  deslocar, e ir ao estado 25
 
-State 7
 
-    7 procedimento: FUNC ID . '(' args ')' instructions ENDFUNC
+Estado 8
 
-    '('  shift, and go to state 23
+    6 funcao: FUNC TYPE • ID '(' args ')' instructions ENDFUNC
 
+    ID  deslocar, e ir ao estado 26
 
-State 8
 
-    6 funcao: FUNC TYPE . ID '(' args ')' instructions ENDFUNC
+Estado 9
 
-    ID  shift, and go to state 24
+    0 $accept: programa $end •
 
+    $padrão  aceitar
 
-State 9
 
-    0 $accept: programa $end .
+Estado 10
 
-    $default  accept
+   42 direct_assignment: ID • ASSIGNMENT expression
+   43 unary_op: ID • ADITION_ASSIGNMENT
+   44         | ID • INCREMENT
+   45         | ID • DECREMENT
+   46         | ID • SUBTRACTION_ASSIGNMENT
 
+    ASSIGNMENT              deslocar, e ir ao estado 27
+    DECREMENT               deslocar, e ir ao estado 28
+    INCREMENT               deslocar, e ir ao estado 29
+    SUBTRACTION_ASSIGNMENT  deslocar, e ir ao estado 30
+    ADITION_ASSIGNMENT      deslocar, e ir ao estado 31
 
-State 10
 
-   41 direct_assignment: ID . ASSIGNMENT expression
-   42 unary_op: ID . ADITION_ASSIGNMENT
-   43         | ID . INCREMENT
-   44         | ID . DECREMENT
-   45         | ID . SUBTRACTION_ASSIGNMENT
+Estado 11
 
-    ASSIGNMENT              shift, and go to state 25
-    DECREMENT               shift, and go to state 26
-    INCREMENT               shift, and go to state 27
-    SUBTRACTION_ASSIGNMENT  shift, and go to state 28
-    ADITION_ASSIGNMENT      shift, and go to state 29
+   21 var_declarations: TYPE • var_list
 
+    ID  deslocar, e ir ao estado 32
 
-State 11
+    var_list  ir ao estado 33
+    variable  ir ao estado 34
 
-   20 var_declarations: TYPE . var_list
 
-    ID  shift, and go to state 30
+Estado 12
 
-    var_list  go to state 31
-    variable  go to state 32
+   49 while_loop: WHILE • '(' expression ')' instructions ENDWHILE
 
+    '('  deslocar, e ir ao estado 35
 
-State 12
 
-   48 while_loop: WHILE . '(' expression ')' instructions ENDWHILE
+Estado 13
 
-    '('  shift, and go to state 33
+   47 conditional_if: IF • '(' expression ')' instructions ENDIF
+   48               | IF • '(' expression ')' instructions ELSE instructions ENDIF
 
+    '('  deslocar, e ir ao estado 36
 
-State 13
 
-   46 conditional_if: IF . '(' expression ')' instructions ENDIF
-   47               | IF . '(' expression ')' instructions ELSE instructions ENDIF
+Estado 14
 
-    '('  shift, and go to state 34
+   50 for_loop: FOR • '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
 
+    '('  deslocar, e ir ao estado 37
 
-State 14
 
-   49 for_loop: FOR . '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
+Estado 15
 
-    '('  shift, and go to state 35
+   51 print: PRINT • '(' texts ')'
 
+    '('  deslocar, e ir ao estado 38
 
-State 15
 
-    1 programa: subps instructions .
+Estado 16
 
-    $default  reduce using rule 1 (programa)
+    1 programa: subps instructions •
 
+    $padrão  reduzir usando a regra 1 (programa)
 
-State 16
 
-   14 instructions: var_declarations . instructions
+Estado 17
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   14 instructions: var_declarations • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 36
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 39
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 17
 
-   15 instructions: direct_assignment . instructions
+Estado 18
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   15 instructions: direct_assignment • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 37
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 40
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 18
 
-   16 instructions: unary_op . instructions
+Estado 19
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   16 instructions: unary_op • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 38
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 41
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 19
 
-   17 instructions: conditional_if . instructions
+Estado 20
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   17 instructions: conditional_if • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 39
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 42
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 20
 
-   18 instructions: while_loop . instructions
+Estado 21
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   18 instructions: while_loop • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 40
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 43
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 21
 
-   19 instructions: for_loop . instructions
+Estado 22
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   19 instructions: for_loop • instructions
 
-    $default  reduce using rule 13 (instructions)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    instructions       go to state 41
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    $padrão  reduzir usando a regra 13 (instructions)
 
+    instructions       ir ao estado 44
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-State 22
 
-    3 subps: subp subps .
+Estado 23
 
-    $default  reduce using rule 3 (subps)
+   20 instructions: print • instructions
 
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-State 23
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    7 procedimento: FUNC ID '(' . args ')' instructions ENDFUNC
+    instructions       ir ao estado 45
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-    TYPE  shift, and go to state 42
 
-    $default  reduce using rule 8 (args)
+Estado 24
 
-    args      go to state 43
-    args_aux  go to state 44
+    3 subps: subp subps •
 
+    $padrão  reduzir usando a regra 3 (subps)
 
-State 24
 
-    6 funcao: FUNC TYPE ID . '(' args ')' instructions ENDFUNC
+Estado 25
 
-    '('  shift, and go to state 45
+    7 procedimento: FUNC ID '(' • args ')' instructions ENDFUNC
 
+    TYPE  deslocar, e ir ao estado 46
 
-State 25
+    $padrão  reduzir usando a regra 8 (args)
 
-   41 direct_assignment: ID ASSIGNMENT . expression
+    args      ir ao estado 47
+    args_aux  ir ao estado 48
 
-    ID  shift, and go to state 46
 
-    expression  go to state 47
+Estado 26
 
+    6 funcao: FUNC TYPE ID • '(' args ')' instructions ENDFUNC
 
-State 26
+    '('  deslocar, e ir ao estado 49
 
-   44 unary_op: ID DECREMENT .
 
-    $default  reduce using rule 44 (unary_op)
+Estado 27
 
+   42 direct_assignment: ID ASSIGNMENT • expression
 
-State 27
+    ID  deslocar, e ir ao estado 50
 
-   43 unary_op: ID INCREMENT .
+    expression  ir ao estado 51
 
-    $default  reduce using rule 43 (unary_op)
 
+Estado 28
 
-State 28
+   45 unary_op: ID DECREMENT •
 
-   45 unary_op: ID SUBTRACTION_ASSIGNMENT .
+    $padrão  reduzir usando a regra 45 (unary_op)
 
-    $default  reduce using rule 45 (unary_op)
 
+Estado 29
 
-State 29
+   44 unary_op: ID INCREMENT •
 
-   42 unary_op: ID ADITION_ASSIGNMENT .
+    $padrão  reduzir usando a regra 44 (unary_op)
 
-    $default  reduce using rule 42 (unary_op)
 
+Estado 30
 
-State 30
+   46 unary_op: ID SUBTRACTION_ASSIGNMENT •
 
-   23 variable: ID .
-   24         | ID . LBRACKET ID RBRACKET
-   25         | ID . ASSIGNMENT expression
-   26         | ID . LBRACKET ID RBRACKET ASSIGNMENT expression
+    $padrão  reduzir usando a regra 46 (unary_op)
 
-    ASSIGNMENT  shift, and go to state 48
-    LBRACKET    shift, and go to state 49
 
-    $default  reduce using rule 23 (variable)
+Estado 31
 
+   43 unary_op: ID ADITION_ASSIGNMENT •
 
-State 31
+    $padrão  reduzir usando a regra 43 (unary_op)
 
-   20 var_declarations: TYPE var_list .
 
-    $default  reduce using rule 20 (var_declarations)
+Estado 32
 
+   24 variable: ID •
+   25         | ID • LBRACKET ID RBRACKET
+   26         | ID • ASSIGNMENT expression
+   27         | ID • LBRACKET ID RBRACKET ASSIGNMENT expression
 
-State 32
+    ASSIGNMENT  deslocar, e ir ao estado 52
+    LBRACKET    deslocar, e ir ao estado 53
 
-   21 var_list: variable . ',' var_list
-   22         | variable .
+    $padrão  reduzir usando a regra 24 (variable)
 
-    ','  shift, and go to state 50
 
-    $default  reduce using rule 22 (var_list)
+Estado 33
 
+   21 var_declarations: TYPE var_list •
 
-State 33
+    $padrão  reduzir usando a regra 21 (var_declarations)
 
-   48 while_loop: WHILE '(' . expression ')' instructions ENDWHILE
 
-    ID  shift, and go to state 46
+Estado 34
 
-    expression  go to state 51
+   22 var_list: variable • ',' var_list
+   23         | variable •
 
+    ','  deslocar, e ir ao estado 54
 
-State 34
+    $padrão  reduzir usando a regra 23 (var_list)
 
-   46 conditional_if: IF '(' . expression ')' instructions ENDIF
-   47               | IF '(' . expression ')' instructions ELSE instructions ENDIF
 
-    ID  shift, and go to state 46
+Estado 35
 
-    expression  go to state 52
+   49 while_loop: WHILE '(' • expression ')' instructions ENDWHILE
 
+    ID  deslocar, e ir ao estado 50
 
-State 35
+    expression  ir ao estado 55
 
-   49 for_loop: FOR '(' . var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
 
-    TYPE  shift, and go to state 11
+Estado 36
 
-    var_declarations  go to state 53
+   47 conditional_if: IF '(' • expression ')' instructions ENDIF
+   48               | IF '(' • expression ')' instructions ELSE instructions ENDIF
 
+    ID  deslocar, e ir ao estado 50
 
-State 36
+    expression  ir ao estado 56
 
-   14 instructions: var_declarations instructions .
 
-    $default  reduce using rule 14 (instructions)
+Estado 37
 
+   50 for_loop: FOR '(' • var_declarations ';' expression ';' unary_op ')' instructions ENDFOR
 
-State 37
+    TYPE  deslocar, e ir ao estado 11
 
-   15 instructions: direct_assignment instructions .
+    var_declarations  ir ao estado 57
 
-    $default  reduce using rule 15 (instructions)
 
+Estado 38
 
-State 38
+   51 print: PRINT '(' • texts ')'
 
-   16 instructions: unary_op instructions .
+    ID      deslocar, e ir ao estado 58
+    STRING  deslocar, e ir ao estado 59
 
-    $default  reduce using rule 16 (instructions)
+    $padrão  reduzir usando a regra 54 (text)
 
+    texts  ir ao estado 60
+    text   ir ao estado 61
 
-State 39
 
-   17 instructions: conditional_if instructions .
+Estado 39
 
-    $default  reduce using rule 17 (instructions)
+   14 instructions: var_declarations instructions •
 
+    $padrão  reduzir usando a regra 14 (instructions)
 
-State 40
 
-   18 instructions: while_loop instructions .
+Estado 40
 
-    $default  reduce using rule 18 (instructions)
+   15 instructions: direct_assignment instructions •
 
+    $padrão  reduzir usando a regra 15 (instructions)
 
-State 41
 
-   19 instructions: for_loop instructions .
+Estado 41
 
-    $default  reduce using rule 19 (instructions)
+   16 instructions: unary_op instructions •
 
+    $padrão  reduzir usando a regra 16 (instructions)
 
-State 42
 
-   10 args_aux: TYPE . ID
-   11         | TYPE . ID LBRACKET RBRACKET ',' args_aux
-   12         | TYPE . ID ',' args_aux
+Estado 42
 
-    ID  shift, and go to state 54
+   17 instructions: conditional_if instructions •
 
+    $padrão  reduzir usando a regra 17 (instructions)
 
-State 43
 
-    7 procedimento: FUNC ID '(' args . ')' instructions ENDFUNC
+Estado 43
 
-    ')'  shift, and go to state 55
+   18 instructions: while_loop instructions •
 
+    $padrão  reduzir usando a regra 18 (instructions)
 
-State 44
 
-    9 args: args_aux .
+Estado 44
 
-    $default  reduce using rule 9 (args)
+   19 instructions: for_loop instructions •
 
+    $padrão  reduzir usando a regra 19 (instructions)
 
-State 45
 
-    6 funcao: FUNC TYPE ID '(' . args ')' instructions ENDFUNC
+Estado 45
 
-    TYPE  shift, and go to state 42
+   20 instructions: print instructions •
 
-    $default  reduce using rule 8 (args)
+    $padrão  reduzir usando a regra 20 (instructions)
 
-    args      go to state 56
-    args_aux  go to state 44
 
+Estado 46
 
-State 46
+   10 args_aux: TYPE • ID
+   11         | TYPE • ID LBRACKET RBRACKET ',' args_aux
+   12         | TYPE • ID ',' args_aux
 
-   27 expression: ID .
-   28           | ID . ASSIGNMENT expression
-   29           | ID . OP_PLUS expression
-   30           | ID . OP_MINUS expression
-   31           | ID . OP_DIV expression
-   32           | ID . OP_MULT expression
-   33           | ID . LESS_THAN expression
-   34           | ID . GREATER_THAN expression
-   35           | ID . EQUALS expression
-   36           | ID . LESS_THAN_OR_EQUAL expression
-   37           | ID . GREATER_THAN_OR_EQUAL expression
-   38           | ID . NOT_EQUALS expression
-   39           | ID . LOGICAL_AND expression
-   40           | ID . LOGICAL_OR expression
+    ID  deslocar, e ir ao estado 62
 
-    ASSIGNMENT             shift, and go to state 57
-    EQUALS                 shift, and go to state 58
-    NOT_EQUALS             shift, and go to state 59
-    GREATER_THAN           shift, and go to state 60
-    LESS_THAN              shift, and go to state 61
-    GREATER_THAN_OR_EQUAL  shift, and go to state 62
-    LESS_THAN_OR_EQUAL     shift, and go to state 63
-    OP_PLUS                shift, and go to state 64
-    OP_MINUS               shift, and go to state 65
-    OP_DIV                 shift, and go to state 66
-    OP_MULT                shift, and go to state 67
-    LOGICAL_AND            shift, and go to state 68
-    LOGICAL_OR             shift, and go to state 69
 
-    $default  reduce using rule 27 (expression)
+Estado 47
 
+    7 procedimento: FUNC ID '(' args • ')' instructions ENDFUNC
 
-State 47
+    ')'  deslocar, e ir ao estado 63
 
-   41 direct_assignment: ID ASSIGNMENT expression .
 
-    $default  reduce using rule 41 (direct_assignment)
+Estado 48
 
+    9 args: args_aux •
 
-State 48
+    $padrão  reduzir usando a regra 9 (args)
 
-   25 variable: ID ASSIGNMENT . expression
 
-    ID  shift, and go to state 46
+Estado 49
 
-    expression  go to state 70
+    6 funcao: FUNC TYPE ID '(' • args ')' instructions ENDFUNC
 
+    TYPE  deslocar, e ir ao estado 46
 
-State 49
+    $padrão  reduzir usando a regra 8 (args)
 
-   24 variable: ID LBRACKET . ID RBRACKET
-   26         | ID LBRACKET . ID RBRACKET ASSIGNMENT expression
+    args      ir ao estado 64
+    args_aux  ir ao estado 48
 
-    ID  shift, and go to state 71
 
+Estado 50
 
-State 50
+   28 expression: ID •
+   29           | ID • ASSIGNMENT expression
+   30           | ID • OP_PLUS expression
+   31           | ID • OP_MINUS expression
+   32           | ID • OP_DIV expression
+   33           | ID • OP_MULT expression
+   34           | ID • LESS_THAN expression
+   35           | ID • GREATER_THAN expression
+   36           | ID • EQUALS expression
+   37           | ID • LESS_THAN_OR_EQUAL expression
+   38           | ID • GREATER_THAN_OR_EQUAL expression
+   39           | ID • NOT_EQUALS expression
+   40           | ID • LOGICAL_AND expression
+   41           | ID • LOGICAL_OR expression
 
-   21 var_list: variable ',' . var_list
+    ASSIGNMENT             deslocar, e ir ao estado 65
+    EQUALS                 deslocar, e ir ao estado 66
+    NOT_EQUALS             deslocar, e ir ao estado 67
+    GREATER_THAN           deslocar, e ir ao estado 68
+    LESS_THAN              deslocar, e ir ao estado 69
+    GREATER_THAN_OR_EQUAL  deslocar, e ir ao estado 70
+    LESS_THAN_OR_EQUAL     deslocar, e ir ao estado 71
+    OP_PLUS                deslocar, e ir ao estado 72
+    OP_MINUS               deslocar, e ir ao estado 73
+    OP_DIV                 deslocar, e ir ao estado 74
+    OP_MULT                deslocar, e ir ao estado 75
+    LOGICAL_AND            deslocar, e ir ao estado 76
+    LOGICAL_OR             deslocar, e ir ao estado 77
 
-    ID  shift, and go to state 30
+    $padrão  reduzir usando a regra 28 (expression)
 
-    var_list  go to state 72
-    variable  go to state 32
 
+Estado 51
 
-State 51
+   42 direct_assignment: ID ASSIGNMENT expression •
 
-   48 while_loop: WHILE '(' expression . ')' instructions ENDWHILE
+    $padrão  reduzir usando a regra 42 (direct_assignment)
 
-    ')'  shift, and go to state 73
 
+Estado 52
 
-State 52
+   26 variable: ID ASSIGNMENT • expression
 
-   46 conditional_if: IF '(' expression . ')' instructions ENDIF
-   47               | IF '(' expression . ')' instructions ELSE instructions ENDIF
+    ID  deslocar, e ir ao estado 50
 
-    ')'  shift, and go to state 74
+    expression  ir ao estado 78
 
 
-State 53
+Estado 53
 
-   49 for_loop: FOR '(' var_declarations . ';' expression ';' unary_op ')' instructions ENDFOR
+   25 variable: ID LBRACKET • ID RBRACKET
+   27         | ID LBRACKET • ID RBRACKET ASSIGNMENT expression
 
-    ';'  shift, and go to state 75
+    ID  deslocar, e ir ao estado 79
 
 
-State 54
+Estado 54
 
-   10 args_aux: TYPE ID .
-   11         | TYPE ID . LBRACKET RBRACKET ',' args_aux
-   12         | TYPE ID . ',' args_aux
+   22 var_list: variable ',' • var_list
 
-    LBRACKET  shift, and go to state 76
-    ','       shift, and go to state 77
+    ID  deslocar, e ir ao estado 32
 
-    $default  reduce using rule 10 (args_aux)
+    var_list  ir ao estado 80
+    variable  ir ao estado 34
 
 
-State 55
+Estado 55
 
-    7 procedimento: FUNC ID '(' args ')' . instructions ENDFUNC
+   49 while_loop: WHILE '(' expression • ')' instructions ENDWHILE
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+    ')'  deslocar, e ir ao estado 81
 
-    $default  reduce using rule 13 (instructions)
 
-    instructions       go to state 78
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+Estado 56
 
+   47 conditional_if: IF '(' expression • ')' instructions ENDIF
+   48               | IF '(' expression • ')' instructions ELSE instructions ENDIF
 
-State 56
+    ')'  deslocar, e ir ao estado 82
 
-    6 funcao: FUNC TYPE ID '(' args . ')' instructions ENDFUNC
 
-    ')'  shift, and go to state 79
+Estado 57
 
+   50 for_loop: FOR '(' var_declarations • ';' expression ';' unary_op ')' instructions ENDFOR
 
-State 57
+    ';'  deslocar, e ir ao estado 83
 
-   28 expression: ID ASSIGNMENT . expression
 
-    ID  shift, and go to state 46
+Estado 58
 
-    expression  go to state 80
+   56 text: ID •
 
+    $padrão  reduzir usando a regra 56 (text)
 
-State 58
 
-   35 expression: ID EQUALS . expression
+Estado 59
 
-    ID  shift, and go to state 46
+   55 text: STRING •
 
-    expression  go to state 81
+    $padrão  reduzir usando a regra 55 (text)
 
 
-State 59
+Estado 60
 
-   38 expression: ID NOT_EQUALS . expression
+   51 print: PRINT '(' texts • ')'
 
-    ID  shift, and go to state 46
+    ')'  deslocar, e ir ao estado 84
 
-    expression  go to state 82
 
+Estado 61
 
-State 60
+   52 texts: text •
+   53      | text • ',' texts
 
-   34 expression: ID GREATER_THAN . expression
+    ','  deslocar, e ir ao estado 85
 
-    ID  shift, and go to state 46
+    $padrão  reduzir usando a regra 52 (texts)
 
-    expression  go to state 83
 
+Estado 62
 
-State 61
+   10 args_aux: TYPE ID •
+   11         | TYPE ID • LBRACKET RBRACKET ',' args_aux
+   12         | TYPE ID • ',' args_aux
 
-   33 expression: ID LESS_THAN . expression
+    LBRACKET  deslocar, e ir ao estado 86
+    ','       deslocar, e ir ao estado 87
 
-    ID  shift, and go to state 46
+    $padrão  reduzir usando a regra 10 (args_aux)
 
-    expression  go to state 84
 
+Estado 63
 
-State 62
+    7 procedimento: FUNC ID '(' args ')' • instructions ENDFUNC
 
-   37 expression: ID GREATER_THAN_OR_EQUAL . expression
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    ID  shift, and go to state 46
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    expression  go to state 85
+    instructions       ir ao estado 88
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
 
-State 63
+Estado 64
 
-   36 expression: ID LESS_THAN_OR_EQUAL . expression
+    6 funcao: FUNC TYPE ID '(' args • ')' instructions ENDFUNC
 
-    ID  shift, and go to state 46
+    ')'  deslocar, e ir ao estado 89
 
-    expression  go to state 86
 
+Estado 65
 
-State 64
+   29 expression: ID ASSIGNMENT • expression
 
-   29 expression: ID OP_PLUS . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 90
 
-    expression  go to state 87
 
+Estado 66
 
-State 65
+   36 expression: ID EQUALS • expression
 
-   30 expression: ID OP_MINUS . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 91
 
-    expression  go to state 88
 
+Estado 67
 
-State 66
+   39 expression: ID NOT_EQUALS • expression
 
-   31 expression: ID OP_DIV . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 92
 
-    expression  go to state 89
 
+Estado 68
 
-State 67
+   35 expression: ID GREATER_THAN • expression
 
-   32 expression: ID OP_MULT . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 93
 
-    expression  go to state 90
 
+Estado 69
 
-State 68
+   34 expression: ID LESS_THAN • expression
 
-   39 expression: ID LOGICAL_AND . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 94
 
-    expression  go to state 91
 
+Estado 70
 
-State 69
+   38 expression: ID GREATER_THAN_OR_EQUAL • expression
 
-   40 expression: ID LOGICAL_OR . expression
+    ID  deslocar, e ir ao estado 50
 
-    ID  shift, and go to state 46
+    expression  ir ao estado 95
 
-    expression  go to state 92
 
+Estado 71
 
-State 70
+   37 expression: ID LESS_THAN_OR_EQUAL • expression
 
-   25 variable: ID ASSIGNMENT expression .
+    ID  deslocar, e ir ao estado 50
 
-    $default  reduce using rule 25 (variable)
+    expression  ir ao estado 96
 
 
-State 71
+Estado 72
 
-   24 variable: ID LBRACKET ID . RBRACKET
-   26         | ID LBRACKET ID . RBRACKET ASSIGNMENT expression
+   30 expression: ID OP_PLUS • expression
 
-    RBRACKET  shift, and go to state 93
+    ID  deslocar, e ir ao estado 50
 
+    expression  ir ao estado 97
 
-State 72
 
-   21 var_list: variable ',' var_list .
+Estado 73
 
-    $default  reduce using rule 21 (var_list)
+   31 expression: ID OP_MINUS • expression
 
+    ID  deslocar, e ir ao estado 50
 
-State 73
+    expression  ir ao estado 98
 
-   48 while_loop: WHILE '(' expression ')' . instructions ENDWHILE
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+Estado 74
 
-    $default  reduce using rule 13 (instructions)
+   32 expression: ID OP_DIV • expression
 
-    instructions       go to state 94
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    ID  deslocar, e ir ao estado 50
 
+    expression  ir ao estado 99
 
-State 74
 
-   46 conditional_if: IF '(' expression ')' . instructions ENDIF
-   47               | IF '(' expression ')' . instructions ELSE instructions ENDIF
+Estado 75
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+   33 expression: ID OP_MULT • expression
 
-    $default  reduce using rule 13 (instructions)
+    ID  deslocar, e ir ao estado 50
 
-    instructions       go to state 95
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    expression  ir ao estado 100
 
 
-State 75
+Estado 76
 
-   49 for_loop: FOR '(' var_declarations ';' . expression ';' unary_op ')' instructions ENDFOR
+   40 expression: ID LOGICAL_AND • expression
 
-    ID  shift, and go to state 46
+    ID  deslocar, e ir ao estado 50
 
-    expression  go to state 96
+    expression  ir ao estado 101
 
 
-State 76
+Estado 77
 
-   11 args_aux: TYPE ID LBRACKET . RBRACKET ',' args_aux
+   41 expression: ID LOGICAL_OR • expression
 
-    RBRACKET  shift, and go to state 97
+    ID  deslocar, e ir ao estado 50
 
+    expression  ir ao estado 102
 
-State 77
 
-   12 args_aux: TYPE ID ',' . args_aux
+Estado 78
 
-    TYPE  shift, and go to state 42
+   26 variable: ID ASSIGNMENT expression •
 
-    args_aux  go to state 98
+    $padrão  reduzir usando a regra 26 (variable)
 
 
-State 78
+Estado 79
 
-    7 procedimento: FUNC ID '(' args ')' instructions . ENDFUNC
+   25 variable: ID LBRACKET ID • RBRACKET
+   27         | ID LBRACKET ID • RBRACKET ASSIGNMENT expression
 
-    ENDFUNC  shift, and go to state 99
+    RBRACKET  deslocar, e ir ao estado 103
 
 
-State 79
+Estado 80
 
-    6 funcao: FUNC TYPE ID '(' args ')' . instructions ENDFUNC
+   22 var_list: variable ',' var_list •
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+    $padrão  reduzir usando a regra 22 (var_list)
 
-    $default  reduce using rule 13 (instructions)
 
-    instructions       go to state 100
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+Estado 81
 
+   49 while_loop: WHILE '(' expression ')' • instructions ENDWHILE
 
-State 80
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-   28 expression: ID ASSIGNMENT expression .
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    $default  reduce using rule 28 (expression)
+    instructions       ir ao estado 104
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
 
-State 81
+Estado 82
 
-   35 expression: ID EQUALS expression .
+   47 conditional_if: IF '(' expression ')' • instructions ENDIF
+   48               | IF '(' expression ')' • instructions ELSE instructions ENDIF
 
-    $default  reduce using rule 35 (expression)
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
+    $padrão  reduzir usando a regra 13 (instructions)
 
-State 82
+    instructions       ir ao estado 105
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
-   38 expression: ID NOT_EQUALS expression .
 
-    $default  reduce using rule 38 (expression)
+Estado 83
 
+   50 for_loop: FOR '(' var_declarations ';' • expression ';' unary_op ')' instructions ENDFOR
 
-State 83
+    ID  deslocar, e ir ao estado 50
 
-   34 expression: ID GREATER_THAN expression .
+    expression  ir ao estado 106
 
-    $default  reduce using rule 34 (expression)
 
+Estado 84
 
-State 84
+   51 print: PRINT '(' texts ')' •
 
-   33 expression: ID LESS_THAN expression .
+    $padrão  reduzir usando a regra 51 (print)
 
-    $default  reduce using rule 33 (expression)
 
+Estado 85
 
-State 85
+   53 texts: text ',' • texts
 
-   37 expression: ID GREATER_THAN_OR_EQUAL expression .
+    ID      deslocar, e ir ao estado 58
+    STRING  deslocar, e ir ao estado 59
 
-    $default  reduce using rule 37 (expression)
+    $padrão  reduzir usando a regra 54 (text)
 
+    texts  ir ao estado 107
+    text   ir ao estado 61
 
-State 86
 
-   36 expression: ID LESS_THAN_OR_EQUAL expression .
+Estado 86
 
-    $default  reduce using rule 36 (expression)
+   11 args_aux: TYPE ID LBRACKET • RBRACKET ',' args_aux
 
+    RBRACKET  deslocar, e ir ao estado 108
 
-State 87
 
-   29 expression: ID OP_PLUS expression .
+Estado 87
 
-    $default  reduce using rule 29 (expression)
+   12 args_aux: TYPE ID ',' • args_aux
 
+    TYPE  deslocar, e ir ao estado 46
 
-State 88
+    args_aux  ir ao estado 109
 
-   30 expression: ID OP_MINUS expression .
 
-    $default  reduce using rule 30 (expression)
+Estado 88
 
+    7 procedimento: FUNC ID '(' args ')' instructions • ENDFUNC
 
-State 89
+    ENDFUNC  deslocar, e ir ao estado 110
 
-   31 expression: ID OP_DIV expression .
 
-    $default  reduce using rule 31 (expression)
+Estado 89
 
+    6 funcao: FUNC TYPE ID '(' args ')' • instructions ENDFUNC
 
-State 90
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-   32 expression: ID OP_MULT expression .
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    $default  reduce using rule 32 (expression)
+    instructions       ir ao estado 111
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
 
-State 91
+Estado 90
 
-   39 expression: ID LOGICAL_AND expression .
+   29 expression: ID ASSIGNMENT expression •
 
-    $default  reduce using rule 39 (expression)
+    $padrão  reduzir usando a regra 29 (expression)
 
 
-State 92
+Estado 91
 
-   40 expression: ID LOGICAL_OR expression .
+   36 expression: ID EQUALS expression •
 
-    $default  reduce using rule 40 (expression)
+    $padrão  reduzir usando a regra 36 (expression)
 
 
-State 93
+Estado 92
 
-   24 variable: ID LBRACKET ID RBRACKET .
-   26         | ID LBRACKET ID RBRACKET . ASSIGNMENT expression
+   39 expression: ID NOT_EQUALS expression •
 
-    ASSIGNMENT  shift, and go to state 101
+    $padrão  reduzir usando a regra 39 (expression)
 
-    $default  reduce using rule 24 (variable)
 
+Estado 93
 
-State 94
+   35 expression: ID GREATER_THAN expression •
 
-   48 while_loop: WHILE '(' expression ')' instructions . ENDWHILE
+    $padrão  reduzir usando a regra 35 (expression)
 
-    ENDWHILE  shift, and go to state 102
 
+Estado 94
 
-State 95
+   34 expression: ID LESS_THAN expression •
 
-   46 conditional_if: IF '(' expression ')' instructions . ENDIF
-   47               | IF '(' expression ')' instructions . ELSE instructions ENDIF
+    $padrão  reduzir usando a regra 34 (expression)
 
-    ELSE   shift, and go to state 103
-    ENDIF  shift, and go to state 104
 
+Estado 95
 
-State 96
+   38 expression: ID GREATER_THAN_OR_EQUAL expression •
 
-   49 for_loop: FOR '(' var_declarations ';' expression . ';' unary_op ')' instructions ENDFOR
+    $padrão  reduzir usando a regra 38 (expression)
 
-    ';'  shift, and go to state 105
 
+Estado 96
 
-State 97
+   37 expression: ID LESS_THAN_OR_EQUAL expression •
 
-   11 args_aux: TYPE ID LBRACKET RBRACKET . ',' args_aux
+    $padrão  reduzir usando a regra 37 (expression)
 
-    ','  shift, and go to state 106
 
+Estado 97
 
-State 98
+   30 expression: ID OP_PLUS expression •
 
-   12 args_aux: TYPE ID ',' args_aux .
+    $padrão  reduzir usando a regra 30 (expression)
 
-    $default  reduce using rule 12 (args_aux)
 
+Estado 98
 
-State 99
+   31 expression: ID OP_MINUS expression •
 
-    7 procedimento: FUNC ID '(' args ')' instructions ENDFUNC .
+    $padrão  reduzir usando a regra 31 (expression)
 
-    $default  reduce using rule 7 (procedimento)
 
+Estado 99
 
-State 100
+   32 expression: ID OP_DIV expression •
 
-    6 funcao: FUNC TYPE ID '(' args ')' instructions . ENDFUNC
+    $padrão  reduzir usando a regra 32 (expression)
 
-    ENDFUNC  shift, and go to state 107
 
+Estado 100
 
-State 101
+   33 expression: ID OP_MULT expression •
 
-   26 variable: ID LBRACKET ID RBRACKET ASSIGNMENT . expression
+    $padrão  reduzir usando a regra 33 (expression)
 
-    ID  shift, and go to state 46
 
-    expression  go to state 108
+Estado 101
 
+   40 expression: ID LOGICAL_AND expression •
 
-State 102
+    $padrão  reduzir usando a regra 40 (expression)
 
-   48 while_loop: WHILE '(' expression ')' instructions ENDWHILE .
 
-    $default  reduce using rule 48 (while_loop)
+Estado 102
 
+   41 expression: ID LOGICAL_OR expression •
 
-State 103
+    $padrão  reduzir usando a regra 41 (expression)
 
-   47 conditional_if: IF '(' expression ')' instructions ELSE . instructions ENDIF
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+Estado 103
 
-    $default  reduce using rule 13 (instructions)
+   25 variable: ID LBRACKET ID RBRACKET •
+   27         | ID LBRACKET ID RBRACKET • ASSIGNMENT expression
 
-    instructions       go to state 109
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    ASSIGNMENT  deslocar, e ir ao estado 112
 
+    $padrão  reduzir usando a regra 25 (variable)
 
-State 104
 
-   46 conditional_if: IF '(' expression ')' instructions ENDIF .
+Estado 104
 
-    $default  reduce using rule 46 (conditional_if)
+   49 while_loop: WHILE '(' expression ')' instructions • ENDWHILE
 
+    ENDWHILE  deslocar, e ir ao estado 113
 
-State 105
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' . unary_op ')' instructions ENDFOR
+Estado 105
 
-    ID  shift, and go to state 110
+   47 conditional_if: IF '(' expression ')' instructions • ENDIF
+   48               | IF '(' expression ')' instructions • ELSE instructions ENDIF
 
-    unary_op  go to state 111
+    ELSE   deslocar, e ir ao estado 114
+    ENDIF  deslocar, e ir ao estado 115
 
 
-State 106
+Estado 106
 
-   11 args_aux: TYPE ID LBRACKET RBRACKET ',' . args_aux
+   50 for_loop: FOR '(' var_declarations ';' expression • ';' unary_op ')' instructions ENDFOR
 
-    TYPE  shift, and go to state 42
+    ';'  deslocar, e ir ao estado 116
 
-    args_aux  go to state 112
 
+Estado 107
 
-State 107
+   53 texts: text ',' texts •
 
-    6 funcao: FUNC TYPE ID '(' args ')' instructions ENDFUNC .
+    $padrão  reduzir usando a regra 53 (texts)
 
-    $default  reduce using rule 6 (funcao)
 
+Estado 108
 
-State 108
+   11 args_aux: TYPE ID LBRACKET RBRACKET • ',' args_aux
 
-   26 variable: ID LBRACKET ID RBRACKET ASSIGNMENT expression .
+    ','  deslocar, e ir ao estado 117
 
-    $default  reduce using rule 26 (variable)
 
+Estado 109
 
-State 109
+   12 args_aux: TYPE ID ',' args_aux •
 
-   47 conditional_if: IF '(' expression ')' instructions ELSE instructions . ENDIF
+    $padrão  reduzir usando a regra 12 (args_aux)
 
-    ENDIF  shift, and go to state 113
 
+Estado 110
 
-State 110
+    7 procedimento: FUNC ID '(' args ')' instructions ENDFUNC •
 
-   42 unary_op: ID . ADITION_ASSIGNMENT
-   43         | ID . INCREMENT
-   44         | ID . DECREMENT
-   45         | ID . SUBTRACTION_ASSIGNMENT
+    $padrão  reduzir usando a regra 7 (procedimento)
 
-    DECREMENT               shift, and go to state 26
-    INCREMENT               shift, and go to state 27
-    SUBTRACTION_ASSIGNMENT  shift, and go to state 28
-    ADITION_ASSIGNMENT      shift, and go to state 29
 
+Estado 111
 
-State 111
+    6 funcao: FUNC TYPE ID '(' args ')' instructions • ENDFUNC
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' unary_op . ')' instructions ENDFOR
+    ENDFUNC  deslocar, e ir ao estado 118
 
-    ')'  shift, and go to state 114
 
+Estado 112
 
-State 112
+   27 variable: ID LBRACKET ID RBRACKET ASSIGNMENT • expression
 
-   11 args_aux: TYPE ID LBRACKET RBRACKET ',' args_aux .
+    ID  deslocar, e ir ao estado 50
 
-    $default  reduce using rule 11 (args_aux)
+    expression  ir ao estado 119
 
 
-State 113
+Estado 113
 
-   47 conditional_if: IF '(' expression ')' instructions ELSE instructions ENDIF .
+   49 while_loop: WHILE '(' expression ')' instructions ENDWHILE •
 
-    $default  reduce using rule 47 (conditional_if)
+    $padrão  reduzir usando a regra 49 (while_loop)
 
 
-State 114
+Estado 114
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' . instructions ENDFOR
+   48 conditional_if: IF '(' expression ')' instructions ELSE • instructions ENDIF
 
-    ID     shift, and go to state 10
-    TYPE   shift, and go to state 11
-    WHILE  shift, and go to state 12
-    IF     shift, and go to state 13
-    FOR    shift, and go to state 14
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
 
-    $default  reduce using rule 13 (instructions)
+    $padrão  reduzir usando a regra 13 (instructions)
 
-    instructions       go to state 115
-    var_declarations   go to state 16
-    direct_assignment  go to state 17
-    unary_op           go to state 18
-    conditional_if     go to state 19
-    while_loop         go to state 20
-    for_loop           go to state 21
+    instructions       ir ao estado 120
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
 
 
-State 115
+Estado 115
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions . ENDFOR
+   47 conditional_if: IF '(' expression ')' instructions ENDIF •
 
-    ENDFOR  shift, and go to state 116
+    $padrão  reduzir usando a regra 47 (conditional_if)
 
 
-State 116
+Estado 116
 
-   49 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR .
+   50 for_loop: FOR '(' var_declarations ';' expression ';' • unary_op ')' instructions ENDFOR
 
-    $default  reduce using rule 49 (for_loop)
+    ID  deslocar, e ir ao estado 121
+
+    unary_op  ir ao estado 122
+
+
+Estado 117
+
+   11 args_aux: TYPE ID LBRACKET RBRACKET ',' • args_aux
+
+    TYPE  deslocar, e ir ao estado 46
+
+    args_aux  ir ao estado 123
+
+
+Estado 118
+
+    6 funcao: FUNC TYPE ID '(' args ')' instructions ENDFUNC •
+
+    $padrão  reduzir usando a regra 6 (funcao)
+
+
+Estado 119
+
+   27 variable: ID LBRACKET ID RBRACKET ASSIGNMENT expression •
+
+    $padrão  reduzir usando a regra 27 (variable)
+
+
+Estado 120
+
+   48 conditional_if: IF '(' expression ')' instructions ELSE instructions • ENDIF
+
+    ENDIF  deslocar, e ir ao estado 124
+
+
+Estado 121
+
+   43 unary_op: ID • ADITION_ASSIGNMENT
+   44         | ID • INCREMENT
+   45         | ID • DECREMENT
+   46         | ID • SUBTRACTION_ASSIGNMENT
+
+    DECREMENT               deslocar, e ir ao estado 28
+    INCREMENT               deslocar, e ir ao estado 29
+    SUBTRACTION_ASSIGNMENT  deslocar, e ir ao estado 30
+    ADITION_ASSIGNMENT      deslocar, e ir ao estado 31
+
+
+Estado 122
+
+   50 for_loop: FOR '(' var_declarations ';' expression ';' unary_op • ')' instructions ENDFOR
+
+    ')'  deslocar, e ir ao estado 125
+
+
+Estado 123
+
+   11 args_aux: TYPE ID LBRACKET RBRACKET ',' args_aux •
+
+    $padrão  reduzir usando a regra 11 (args_aux)
+
+
+Estado 124
+
+   48 conditional_if: IF '(' expression ')' instructions ELSE instructions ENDIF •
+
+    $padrão  reduzir usando a regra 48 (conditional_if)
+
+
+Estado 125
+
+   50 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' • instructions ENDFOR
+
+    ID     deslocar, e ir ao estado 10
+    TYPE   deslocar, e ir ao estado 11
+    WHILE  deslocar, e ir ao estado 12
+    IF     deslocar, e ir ao estado 13
+    FOR    deslocar, e ir ao estado 14
+    PRINT  deslocar, e ir ao estado 15
+
+    $padrão  reduzir usando a regra 13 (instructions)
+
+    instructions       ir ao estado 126
+    var_declarations   ir ao estado 17
+    direct_assignment  ir ao estado 18
+    unary_op           ir ao estado 19
+    conditional_if     ir ao estado 20
+    while_loop         ir ao estado 21
+    for_loop           ir ao estado 22
+    print              ir ao estado 23
+
+
+Estado 126
+
+   50 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions • ENDFOR
+
+    ENDFOR  deslocar, e ir ao estado 127
+
+
+Estado 127
+
+   50 for_loop: FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR •
+
+    $padrão  reduzir usando a regra 50 (for_loop)

@@ -1,5 +1,7 @@
 func int soma(int a[], int b)
 
+print("o valor de a é:", a )
+
 int a, b[2]
 
 a = 2 + 2
@@ -23,6 +25,7 @@ else
 endif
 
 b++
+
 
 while(true)
 int a = 0

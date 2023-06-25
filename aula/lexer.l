@@ -54,11 +54,11 @@
 "float"                {yylval.sValue = strdup("float"); return TYPE;}
 "str"                  {printf("T_STRING\n");}
 "bool"                 {printf("T_BOOLEAN\n");}
-"print"                {printf("PRINT\n");}
+"print"                {return PRINT;}
 "return"               {printf("RETURN\n");}
 "null"                 {printf("NULL\n");}
-\'([^\'\\\n]|(\\.))*\' {printf("STRING(%s)\n", yytext);}
-\"([^\"\\\n]|(\\.))*\" {printf("STRING(%s)\n", yytext);}
+\"([^\"\\\n]|(\\.))*\" {yylval.sValue = strdup(yytext);
+                         return STRING;}
 [a-zA-Z][a-zA-Z0-9_]*  {yylval.sValue = strdup(yytext); return ID;}
 .                      {printf("Invalid character.\n");}
 
