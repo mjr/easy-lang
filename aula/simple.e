@@ -1,5 +1,6 @@
 func int soma(int a[], int b)
 
+scan (int a, int b, string palavra)
 print("o valor de a é:", a )
 
 int a, b[2]

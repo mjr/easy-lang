@@ -86,7 +86,8 @@ extern int yydebug;
     ADITION_ASSIGNMENT = 287,      /* ADITION_ASSIGNMENT  */
     LOGICAL_AND = 288,             /* LOGICAL_AND  */
     LOGICAL_OR = 289,              /* LOGICAL_OR  */
-    PRINT = 290                    /* PRINT  */
+    PRINT = 290,                   /* PRINT  */
+    SCAN = 291                     /* SCAN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -128,6 +129,7 @@ extern int yydebug;
 #define LOGICAL_AND 288
 #define LOGICAL_OR 289
 #define PRINT 290
+#define SCAN 291
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -139,7 +141,7 @@ union YYSTYPE
     struct record * rec;
  
 
-#line 143 "y.tab.h"
+#line 145 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

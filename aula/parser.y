@@ -26,7 +26,7 @@ extern FILE * yyin, * yyout;
 %token <sValue> STRING 
 %token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
-OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT
+OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT SCAN
 
 %type <rec> instructions
 %type <rec> procedimento
@@ -73,6 +73,7 @@ instructions:   {}
               | while_loop instructions {}
               | for_loop instructions {}
 	      | print instructions {}
+	      | scan instructions {}
           ;
 
 var_declarations : TYPE var_list {} ;
@@ -134,6 +135,11 @@ text :   {}
 	| ID {}     
 ;
 
+scan : SCAN '(' scan_list ')' ;
+
+scan_list : TYPE ID
+	  | TYPE ID ',' scan_list
+;
 
 %%
 

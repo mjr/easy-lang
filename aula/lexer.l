@@ -52,9 +52,10 @@
 "global"               {printf("GLOBAL_VALUE\n");}
 "int"                  {yylval.sValue = strdup("int"); return TYPE;}
 "float"                {yylval.sValue = strdup("float"); return TYPE;}
-"str"                  {printf("T_STRING\n");}
+"string"               {yylval.sValue = strdup("string"); return TYPE;}
 "bool"                 {printf("T_BOOLEAN\n");}
 "print"                {return PRINT;}
+"scan"		       {return SCAN;}
 "return"               {printf("RETURN\n");}
 "null"                 {printf("NULL\n");}
 \"([^\"\\\n]|(\\.))*\" {yylval.sValue = strdup(yytext);
