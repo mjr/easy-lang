@@ -7,8 +7,10 @@
 
 %%
 
-[ \t\n]                ;
-[0-9]+                 {yylval.iValue = atoi(yytext); return NUMBER;}
+[ \t]                   ;
+\n                     {yylineno++;}
+[0-9]+                 {yylval.sValue = strdup(yytext); 
+                         return ID;}
 [0-9]\.[0-9]+	         {printf("FLOAT_NUMBER (%s)\n",yytext);}
 "func"                 {return(FUNC);}
 "endfunc"              {return(ENDFUNC);}
@@ -50,13 +52,14 @@
 "global"               {printf("GLOBAL_VALUE\n");}
 "int"                  {yylval.sValue = strdup("int"); return TYPE;}
 "float"                {yylval.sValue = strdup("float"); return TYPE;}
-"str"                  {printf("T_STRING\n");}
+"string"               {yylval.sValue = strdup("string"); return TYPE;}
 "bool"                 {printf("T_BOOLEAN\n");}
-"print"                {printf("PRINT\n");}
+"print"                {return PRINT;}
+"scan"		       {return SCAN;}
 "return"               {printf("RETURN\n");}
 "null"                 {printf("NULL\n");}
-\'([^\'\\\n]|(\\.))*\' {printf("STRING(%s)\n", yytext);}
-\"([^\"\\\n]|(\\.))*\" {printf("STRING(%s)\n", yytext);}
+\"([^\"\\\n]|(\\.))*\" {yylval.sValue = strdup(yytext);
+                         return STRING;}
 [a-zA-Z][a-zA-Z0-9_]*  {yylval.sValue = strdup(yytext); return ID;}
 .                      {printf("Invalid character.\n");}
 

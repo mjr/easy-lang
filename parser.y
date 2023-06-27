@@ -2,232 +2,168 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./lib/record.h"
 
 int yylex(void);
 int yyerror(char *s);
 extern int yylineno;
 extern char * yytext;
+extern FILE * yyin, * yyout;
 %}
 
+//char * cat(char *, char *, char *, char *, char *);
+
+//%}
+
 %union {
-  int    iValue;  /* integer value */
-  char   cValue;  /* char value */
-  char * sValue;  /* string value */
-};
+    char * sValue;  /* string value */
+    struct record * rec;
+ };
 
 %token <sValue> ID
 %token <sValue> TYPE 
-%token <iValue> NUMBER
+%token <sValue> NUMBER 
+%token <sValue> STRING 
 %token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
-OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR
+OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT SCAN
 
-%type <sValue> corpo
-%type <sValue> procedimento
-%type <sValue> funcao
-%type <sValue> subp
-%type <sValue> subps args args_aux ids ids_aux
+%type <rec> instructions
+%type <rec> procedimento
+%type <rec> funcao
+%type <rec> subp expression
+%type <rec> subps args args_aux var_declarations var_list variable conditional_if
 
 
 %start programa
 
 %%
-programa : subps corpo {/*printf("%s%s\n", $1, $2);
-                        free($1);
-                        free($2);*/}
+programa : subps instructions {
+                                fprintf(yyout, "%s\n%s", $1->code, $2->code);
+                                freeRecord($1);
+                                freeRecord($2);
+                              }
     ;
 
-subps :             {$$ = strdup("");} 
-       | subp subps {/*int n1 = strlen($1);
-                     int n2 = strlen($2);
-                     char * s = malloc(sizeof(char)*(n1+n2+2));
-                     sprintf(s, "%s\n%s", $1, $2);
-                     free($1);
-                     free($2);
-                     $$ = s;*/}
+subps :             {} 
+       | subp subps {}
       ;
 
-subp : funcao       {$$ = $1;}
-     | procedimento {$$ = $1;}
+subp : funcao       {}
+     | procedimento {}
      ;
 
-funcao : FUNC TYPE ID '(' args ')' corpo ENDFUNC  {/*int n1 = strlen($3);
-                                                  int n2 = strlen($5);
-                                                  int n3 = strlen($2);
-                                                  int n4 = strlen($7);
-                                                  char * s = malloc(sizeof(char)*(n1+n2+n3+n4+12));
-                                                  sprintf(s, "FUNC %s(%s) : %s %s", $3, $5, $2, $7);
-                                                  free($3);
-                                                  free($5);
-                                                  free($2);
-                                                  free($7);
-                                                  $$ = s;*/}
+funcao : FUNC TYPE ID '(' args ')' instructions ENDFUNC  {}
        ;
 
-procedimento : FUNC ID '(' args ')' corpo       {int n1 = strlen($2);
-                                                int n2 = strlen($4);
-                                                int n3 = strlen($6);
-                                                char * s = malloc(sizeof(char)*(n1+n2+n3));
-                                                sprintf(s, "PROCEDURE %s() %s", $2, $6);
-                                                free($2);
-                                                free($6);
-                                                $$ = s;} 
+procedimento : FUNC ID '(' args ')' instructions ENDFUNC {} 
              ;
 
-args :          {$$ = strdup("");}
-     | args_aux {$$ = $1;}
+args :             {}
+        | args_aux {}
      ;
 
-args_aux : TYPE ids               {int n1 = strlen($1);
-                                   int n2 = strlen($2);
-                                   char * s = malloc(sizeof(char) * (n1+n2+2));
-                                   sprintf(s,"%s %s", $1, $2);
-                                   free($1);
-                                   free($2);
-                                   $$ = s;}
-         | TYPE ids ';' args_aux {int n1 = strlen($1);
-                                  int n2 = strlen($2);
-                                  int n3 = strlen($4);
-                                  char * s = malloc(sizeof(char) * (n1+n2+n3+4));
-                                  sprintf(s,"%s %s; %s", $1, $2, $4);
-                                  free($1);
-                                  free($2);
-                                  free($4);
-                                  $$ = s;}
+args_aux :    TYPE ID               {}
+            | TYPE ID LBRACKET RBRACKET ',' args_aux  {}
+            | TYPE ID ',' args_aux  {}
          ;
 
-ids :         {$$ = strdup("");}
-    | ids_aux {$$ = $1;}
-    ;
 
-ids_aux : ID             {$$ = $1;}
-        | ID ',' ids_aux {int n1 = strlen($1);
-                          int n2 = strlen($3);
-                          char * s = malloc(sizeof(char) * (n1+n2+3));
-                          sprintf(s,"%s, %s", $1, $3);
-                          free($1);
-                          free($3);
-                          $$ = s;}
-        ;
-
-corpo : blocks
-      | 
-	;
-
-blocks : block
-       | block blocks
-	;
-
-block :  instructions
-      ;
-
-instructions: var_declarations
-            | aritimetic_operations
-            | direct_assignment
-            | if_statement
-            | while_loop
-            | for_loop
+instructions:   {}
+              | var_declarations instructions {}
+              | direct_assignment instructions {}
+              | unary_op instructions {}
+              | conditional_if instructions {}
+              | while_loop instructions {}
+              | for_loop instructions {}
+	      | print instructions {}
+	      | scan instructions {}
           ;
 
-var_declarations : TYPE var_list ;
+var_declarations : TYPE var_list {} ;
 
 var_list : variable ',' var_list
-        | variable
-        ;
+          | variable
+          ;
 
-variable : ID
-        | ID LBRACKET ID RBRACKET 
-        | ID ASSIGNMENT expression
-        | ID LBRACKET ID RBRACKET ASSIGNMENT expression
+variable : ID                        {}
+        | ID LBRACKET ID RBRACKET   {}
+        | ID ASSIGNMENT expression  {}
+        | ID LBRACKET ID RBRACKET ASSIGNMENT expression  {}
  ;
 
-expression : ID ASSIGNMENT expression
-            | ID LBRACKET expression RBRACKET
-            | logical_expression
-            | aritimetic_expression
+expression : ID {}
+            | ID ASSIGNMENT expression  {}
+            | ID OP_PLUS expression {}
+            | ID OP_MINUS expression {}
+            | ID OP_DIV expression {}
+            | ID OP_MULT expression {}
+
+            | ID LESS_THAN expression {}
+            | ID GREATER_THAN expression {}
+            | ID EQUALS expression {}
+            | ID LESS_THAN_OR_EQUAL expression {}
+            | ID GREATER_THAN_OR_EQUAL expression {}
+            | ID NOT_EQUALS expression {}
+            
+
+            | ID LOGICAL_AND expression {}
+            | ID LOGICAL_OR expression {}
+            
             ;
 
+direct_assignment : ID ASSIGNMENT expression {}
+      ;
+
+unary_op :  ID ADITION_ASSIGNMENT
+          | ID INCREMENT
+          | ID DECREMENT
+          | ID SUBTRACTION_ASSIGNMENT
+  ;
 
 
-logical_expression :  logical_expression LESS_THAN logical_expression
-                    | logical_expression GREATER_THAN logical_expression
-                    | logical_expression EQUALS logical_expression
-                    | logical_expression LESS_THAN_OR_EQUAL logical_expression
-                    | logical_expression GREATER_THAN_OR_EQUAL logical_expression
-                    ;
+conditional_if : IF '(' expression ')' instructions ENDIF {}
+                | IF '(' expression ')' instructions ELSE instructions ENDIF {}
 
+while_loop : WHILE '(' expression ')' instructions ENDWHILE {};
 
-aritimetic_expression : aritimetic_expression OP_PLUS aritimetic_expression
-                      | aritimetic_expression OP_MINUS aritimetic_expression
-                      | aritimetic_expression OP_DIV aritimetic_expression
-                      | aritimetic_expression OP_MULT aritimetic_expression
-                      | NUMBER
-                      | ID
-                      ;
+for_loop : FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR; // validar o var_declarations com o professor
 
+print : PRINT '(' texts ')' {} ;
 
-while_loop : WHILE '(' conditions ')' corpo ENDWHILE ;
+texts :  text {}
+      | text ',' texts {}
+;
+text :   {}
+	| STRING {} 
+	| ID {}     
+;
 
+scan : SCAN '(' scan_list ')' ;
 
-conditions : expression
-            | expression relational_expression expression
-            ;
-
-relational_expression : LOGICAL_AND
-                      | LOGICAL_OR
-                      ;
-
-
-
-if_statement : IF '(' conditions ')' instructions ENDIF
-             | IF '(' conditions ')' instructions ELSE instructions ENDIF
-             ;
-
-for_loop : FOR '(' ID ASSIGNMENT expression ';' ID logic_operator expression ';' ID unary_op ')' corpo ENDFOR
-         ;
-
-
-unary_op : ADITION_ASSIGNMENT
-        | INCREMENT
-        | DECREMENT
-        | SUBTRACTION_ASSIGNMENT
-        ;
-
-//	  | logical_operations
-
-direct_assignment : ID ASSIGNMENT expression 
-                  | ID LBRACKET ID RBRACKET ASSIGNMENT expression
-                  | ID unary_op
-                  ;
-
-aritimetic_operations : sum 
-		| ID ASSIGNMENT sum		      
-		;
-//		| subtraction
-//		| multiplication
-//		| division
-//		;
-
-
-
-sum : ID OP_PLUS NUMBER
-    | ID OP_PLUS ID
-    | ID ADITION_ASSIGNMENT NUMBER
-    ;
-
-logic_operator : EQUALS
-               | NOT_EQUALS
-                |GREATER_THAN
-                |LESS_THAN
-                |GREATER_THAN_OR_EQUAL
-                |LESS_THAN_OR_EQUAL
-                ;
-
+scan_list : TYPE ID
+	  | TYPE ID ',' scan_list
+;
 
 %%
 
-int main (void) {
-  return yyparse();
+int main (int argc, char ** argv) {
+  int codigo;
+
+    if (argc != 3) {
+       printf("Usage: $./compiler input.txt output.txt\nClosing application...\n");
+       exit(0);
+    }
+    
+    yyin = fopen(argv[1], "r");
+    yyout = fopen(argv[2], "w");
+
+    codigo = yyparse();
+
+    fclose(yyin);
+    fclose(yyout);
+
+	return codigo;
 }
 
 int yyerror (char *msg) {

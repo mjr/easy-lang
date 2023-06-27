@@ -4,3 +4,7 @@
 *.output
 *.vcg
 *.exe
+*.dot
+*.gv
+*parse.tab.c
+*parse.tab.h
