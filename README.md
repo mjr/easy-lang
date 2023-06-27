@@ -4,11 +4,9 @@
 *        (2) $ gcc lex.yy.c -ll (or -lfl)
 *        (3) $ ./a.out < main.e
 
-// Lex and Yacc
-* Usage: (1) $ lex lexer.l
-*        (2) $ yacc parser.y -d -v -g
-*        (3) $ gcc lex.yy.c y.tab.c -o parser.exe
-*        (4) $ ./parser.exe < simple.e
+// Compiler ( lex e yacc )
+* Usage: (1) make
+*        (2) $ ./compiler simple.e simple
 ```
 
 Membros:
