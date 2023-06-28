@@ -31,7 +31,7 @@ OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADIT
 %type <rec> procedimento
 %type <rec> funcao
 %type <rec> subp expression
-%type <rec> subps args args_aux var_declarations var_list variable conditional_if
+%type <rec> subps args args_aux var_declarations var_list variable conditional_if print texts text
 
 
 %start programa
@@ -83,13 +83,17 @@ var_list : variable ',' var_list
           | variable
           ;
 
-variable : ID                        {}
+variable : ID           {$$ = createRecord($1, "");
+	 		free($1);
+			}
         | ID LBRACKET ID RBRACKET   {}
         | ID ASSIGNMENT expression  {}
         | ID LBRACKET ID RBRACKET ASSIGNMENT expression  {}
  ;
 
-expression : ID {}
+expression : ID 	{$$ = createRecord($1, "");
+	   		free($1);
+			}
             | ID ASSIGNMENT expression  {}
             | ID OP_PLUS expression {}
             | ID OP_MINUS expression {}
@@ -109,7 +113,8 @@ expression : ID {}
             
             ;
 
-direct_assignment : ID ASSIGNMENT expression {}
+direct_assignment : ID ASSIGNMENT expression { //$1 recebe $3, e $$ recebe $1 ?
+		  }
       ;
 
 unary_op :  ID ADITION_ASSIGNMENT
@@ -126,14 +131,24 @@ while_loop : WHILE '(' expression ')' instructions ENDWHILE {};
 
 for_loop : FOR '(' var_declarations ';' expression ';' unary_op ')' instructions ENDFOR; // validar o var_declarations com o professor
 
-print : PRINT '(' texts ')' {} ;
+print : PRINT '(' texts ')' {char * spointer = cat("print", "(", $3->code, ")", "");
+      				freeRecord($3);
+				$$ = createRecord(spointer, "");
+				};
 
-texts :  text {}
-      | text ',' texts {}
+texts :  text {$$ = $1;}
+      | text ',' texts {char * spointer = cat($1->code, ",", $3->code, "", "");
+			freeRecord($1);
+			freeRecord($3);
+			$$ = createRecord(spointer, "");
+			free(spointer);
+			}
 ;
-text :   {}
-	| STRING {} 
-	| ID {}     
+text :   {$$ = createRecord("","");}
+	| STRING {$$ = createRecord($1, "");
+		free($1);} 
+	| ID {$$ = createRecord($1, "");
+		free($1);}     
 ;
 
 scan : SCAN '(' scan_list ')' ;
