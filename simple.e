@@ -1,11 +1,11 @@
 func int soma(int a[], int b)
 
-scan (int a, int b, string palavra)
+scan(int a, int b, string palavra)
 print("o valor de a é:", a )
 
 int a, b[2]
 
-a = 2^2
+a = (2^2)+3
 
 
 if(2)

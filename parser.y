@@ -23,7 +23,7 @@ char * cat(char *, char *, char *, char *, char *);
 %token <sValue> TYPE 
 %token <sValue> NUMBER 
 %token <sValue> STRING 
-%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
+%token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS RETURN BREAK
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
 OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT SCAN OP_EXP
 
@@ -50,11 +50,18 @@ subp : funcao       {}
      | procedimento {}
      ;
 
-funcao : FUNC TYPE ID '(' args ')' instructions ENDFUNC  {}
+funcao : FUNC TYPE ID '(' args ')' instructions escape ENDFUNC  {}
        ;
 
 procedimento : FUNC ID '(' args ')' instructions ENDFUNC {} 
              ;
+
+
+escape:   BREAK escape {}
+        | RETURN expression escape {}
+        | RETURN escape {}
+        | {}
+        ;
 
 args :             {}
         | args_aux {}
@@ -73,8 +80,8 @@ instructions:   {}
               | conditional_if instructions {}
               | while_loop instructions {}
               | for_loop instructions {}
-	      | print instructions {}
-	      | scan instructions {}
+              | print instructions {}
+              | scan instructions {}
           ;
 
 var_declarations : TYPE var_list {} ;
@@ -84,22 +91,22 @@ var_list : variable ',' var_list
           ;
 
 variable : ID           {$$ = createRecord($1, "");
-	 		free($1);
-			}
+                        free($1);
+                        }
         | ID LBRACKET ID RBRACKET   {}
         | ID ASSIGNMENT expression  {}
         | ID LBRACKET ID RBRACKET ASSIGNMENT expression  {}
  ;
 
 expression : ID 	{$$ = createRecord($1, "");
-	   		free($1);
-			}
+                    free($1);
+                  }
             | ID ASSIGNMENT expression  {}
             | ID OP_PLUS expression {}
             | ID OP_MINUS expression {}
             | ID OP_DIV expression {}
             | ID OP_MULT expression {}
-	    | ID OP_EXP expression  {}
+	          | ID OP_EXP expression  {}
 
             | ID LESS_THAN expression {}
             | ID GREATER_THAN expression {}

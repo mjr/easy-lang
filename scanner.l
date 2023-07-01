@@ -35,7 +35,7 @@
 "-"                    {return OP_MINUS;}
 "*"                    {return OP_MULT;}
 "/"                    {return OP_DIV;}
-"^"		       {return OP_EXP;}
+"^"		                 {return OP_EXP;}
 "=="                   {return EQUALS;}
 "!="                   {return NOT_EQUALS;}
 ">"                    {return GREATER_THAN;}
@@ -56,8 +56,9 @@
 "string"               {yylval.sValue = strdup("string"); return TYPE;}
 "bool"                 {printf("T_BOOLEAN\n");}
 "print"                {return PRINT;}
-"scan"		       {return SCAN;}
-"return"               {printf("RETURN\n");}
+"scan"		             {return SCAN;}
+"return"               {return (RETURN);}
+"break"                {return (BREAK);}
 "null"                 {printf("NULL\n");}
 \"([^\"\\\n]|(\\.))*\" {yylval.sValue = strdup(yytext);
                          return STRING;}
