@@ -25,7 +25,7 @@ char * cat(char *, char *, char *, char *, char *);
 %token <sValue> STRING 
 %token FUNC ENDFUNC WHILE ENDWHILE IF ELSE ENDIF ASSIGNMENT FOR ENDFOR EQUALS 
 NOT_EQUALS GREATER_THAN LESS_THAN GREATER_THAN_OR_EQUAL LESS_THAN_OR_EQUAL OP_PLUS OP_MINUS 
-OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT SCAN
+OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADITION_ASSIGNMENT LOGICAL_AND LOGICAL_OR PRINT SCAN OP_EXP
 
 %type <rec> instructions
 %type <rec> procedimento
@@ -99,6 +99,7 @@ expression : ID 	{$$ = createRecord($1, "");
             | ID OP_MINUS expression {}
             | ID OP_DIV expression {}
             | ID OP_MULT expression {}
+	    | ID OP_EXP expression  {}
 
             | ID LESS_THAN expression {}
             | ID GREATER_THAN expression {}

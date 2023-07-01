@@ -35,6 +35,7 @@
 "-"                    {return OP_MINUS;}
 "*"                    {return OP_MULT;}
 "/"                    {return OP_DIV;}
+"^"		       {return OP_EXP;}
 "=="                   {return EQUALS;}
 "!="                   {return NOT_EQUALS;}
 ">"                    {return GREATER_THAN;}
