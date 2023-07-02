@@ -31,7 +31,7 @@ OP_DIV OP_MULT LBRACKET RBRACKET DECREMENT INCREMENT SUBTRACTION_ASSIGNMENT ADIT
 %type <rec> procedimento
 %type <rec> funcao
 %type <rec> subp expression
-%type <rec> subps args args_aux var_declarations var_list variable conditional_if print texts text
+%type <rec> subps args args_aux var_declarations var_list variable conditional_if print texts text escape
 
 
 %start programa
@@ -82,6 +82,7 @@ instructions:   {}
               | for_loop instructions {}
               | print instructions {}
               | scan instructions {}
+              | call_functions instructions {}
           ;
 
 var_declarations : TYPE var_list {} ;
@@ -97,6 +98,14 @@ variable : ID           {$$ = createRecord($1, "");
         | ID ASSIGNMENT expression  {}
         | ID LBRACKET ID RBRACKET ASSIGNMENT expression  {}
  ;
+
+ call_functions : ID '(' params ')'
+
+ params :   ID params {}
+          | ID ',' params {}
+          | {}
+          ;
+
 
 expression : ID 	{$$ = createRecord($1, "");
                     free($1);

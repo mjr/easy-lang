@@ -1,7 +1,12 @@
-func int sub(int x, int y)
+func int sub(float x, float y, int c)
 
-int a
+int result = x * y - y + c
 
-return a+b
+endfunc
+
+func int main()
+    int c = 3
+    float x = 1
+
 
 endfunc
