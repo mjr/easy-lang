@@ -1,0 +1,6 @@
+*.yy.c
+*.output
+*.dot
+y.tab.c
+y.tab.h
+main
