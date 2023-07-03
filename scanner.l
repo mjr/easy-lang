@@ -48,7 +48,7 @@
 "-="                   {return SUBTRACTION_ASSIGNMENT;}
 "and"                  {return LOGICAL_AND;}
 "or"                   {return LOGICAL_OR;}
-"not"                  {printf("LOGICAL_NOT\n");}
+"not"                  {return LOGICAL_NOT;}
 "const"                {printf("CONSTANT_VALUE\n");}
 "global"               {printf("GLOBAL_VALUE\n");}
 "int"                  {yylval.sValue = strdup("int"); return TYPE;}
