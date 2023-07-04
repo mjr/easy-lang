@@ -216,6 +216,7 @@ print : PRINT '(' exps ')' ';' {
       };
 
 exp : exp OPPLUS exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " + ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
