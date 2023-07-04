@@ -11,9 +11,10 @@ extern int yylineno;
 extern char *yytext;
 extern FILE *yyin, *yyout;
 
-char *cat(char *, char *, char *, char *, char *, char *);
+char *cat(char *, char *, char *, char *, char *, char *, char *);
 
 SymbolTable *symbolTable;
+int gotoCounter;
 %}
 
 %union {
@@ -32,7 +33,7 @@ SymbolTable *symbolTable;
 %type <rec> cond return print exp call exps_op exps
 
 %left OPPLUS OPMINUS
-%left OPMULT OPDIV OPEXP
+%left OPMULT OPDIV OPEXP OPEQ
 
 %start prog
 
@@ -47,7 +48,7 @@ subprogs : {
           $$ = createRecord("","");
         }
         | subprog subprogs {
-          char * s = cat($1->code, "\n", $2->code, "", "", "");
+          char * s = cat($1->code, "\n", $2->code, "", "", "", "");
           freeRecord($1);
           freeRecord($2);
           $$ = createRecord(s, "");
@@ -55,8 +56,8 @@ subprogs : {
         };
 
 subprog : FUNC TYPE ID '(' args_op ')' cmds ENDFUNC {
-          char * s1 = cat($2, " ", $3, "(", $5->code, "");
-          char * s2 = cat(s1, ")\n", "{\n", $7->code, "}", "");
+          char * s1 = cat($2, " ", $3, "(", $5->code, "", "");
+          char * s2 = cat(s1, ")\n", "{\n", $7->code, "}", "", "");
           free(s1);
           free($2);
           free($3);
@@ -77,7 +78,7 @@ args : arg {
       $$ = $1;
     }
     | arg ',' args {
-      char * s = cat($1->code, ", ", $3->code, "", "", "");
+      char * s = cat($1->code, ", ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
@@ -85,55 +86,15 @@ args : arg {
     };
 
 arg : TYPE ID {
-      char * s = cat($1, " ", $2, "", "", "");
+      char * s = cat($1, " ", $2, "", "", "", "");
       free($1);
       free($2);
       $$ = createRecord(s, "");
       free(s);
     };
 
-// args : arg {
-//       // printf("2 - HERE \n");
-//       // printf("arg: %s\n", $1->code);
-//       $$ = $1;
-//     };
-//     | arg ',' args {
-//       // printf("1 - HERE \n");
-//       // printf("arg 1: %s\n", $1->code);
-//       // printf("arg 2: %s\n", $3->code);
-//       char * s = cat($1->code, "; ", $3->code, "", "", "");
-//       freeRecord($1);
-//       freeRecord($3);
-//       $$ = createRecord(s, "");
-//       free(s);
-//     };
-
-// arg : TYPE ID {
-//       // printf("TYPE ID\n");
-//       // printf("arg 1: %s\n", $1);
-//       // printf("arg 2: %s\n", $2);
-//       char * s = cat($1, " ", $2->code, "", "", "");
-//       free($1);
-//       freeRecord($2);
-//       $$ = createRecord(s, "");
-//       free(s);
-//     };
-
-
-// ids : ID {
-//       $$ = createRecord($1, "");
-//       free($1);
-//     }
-//     | ID ',' ids {
-//       char * s = cat($1, ", ", $3->code, "", "", "");
-//       free($1);
-//       freeRecord($3);
-//       $$ = createRecord(s, "");
-//       free(s);
-//     };
-
 main : MAIN cmds ENDMAIN {
-      char * s = cat("int main() {\n", $2->code, "}", "", "", "");
+      char * s = cat("int main() {\n", $2->code, "}", "", "", "", "");
       freeRecord($2);
       $$ = createRecord(s, "");
       free(s);
@@ -143,14 +104,14 @@ cmds : {
       $$ = createRecord("","");
     }
     | vardecl cmds {
-      char *s = cat($1->code, "\n", $2->code, "", "", "");
+      char *s = cat($1->code, "\n", $2->code, "", "", "", "");
       freeRecord($1);
       freeRecord($2);
       $$ = createRecord(s, "");
       free(s);
     }
     | cmd cmds {
-      char * s = cat($1->code, "\n", $2->code, "", "", "");
+      char * s = cat($1->code, "\n", $2->code, "", "", "", "");
       freeRecord($1);
       freeRecord($2);
       $$ = createRecord(s, "");
@@ -159,29 +120,13 @@ cmds : {
 
 vardecl : TYPE ID ASSIGN exp ';' {
           insertSymbol(symbolTable, $2, $1);
-          char *s = cat($1, " ", $2, " = ", $4->code, ";");
+          char *s = cat($1, " ", $2, " = ", $4->code, ";", "");
           free($1);
           free($2);
           freeRecord($4);
           $$ = createRecord(s, "");
           free(s);
         };
-        // | TYPE ID ASSIGN INT ';' {
-        //   char *s = cat($1, " ", $2, " = ", $4, ";");
-        //   free($1);
-        //   free($2);
-        //   free($4);
-        //   $$ = createRecord(s, "");
-        //   free(s);
-        // }
-        // | TYPE ID ASSIGN FLOAT ';' {
-        //   char *s = cat($1, " ", $2, " = ", $4, ";");
-        //   free($1);
-        //   free($2);
-        //   free($4);
-        //   $$ = createRecord(s, "");
-        //   free(s);
-        // };
 
 cmd : cond {
       $$ = $1;
@@ -194,15 +139,33 @@ cmd : cond {
     };
 
 cond : IF exp cmds ENDIF {
-      char * s = cat("if ", $2->code, " {\n", $3->code, "}", "");
+      char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "");
       freeRecord($2);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | IF exp cmds ELSE cmds ENDIF {
-      char * s1 = cat("if ", $2->code, " {\n", $3->code, "}", "");
-      char * s2 = cat(s1, "\nelse ", "{\n", $5->code, "}", "");
+      char gotoRef[] = "end";
+      sprintf(gotoRef, "%d", gotoCounter);
+      gotoCounter++;
+
+      char * s1 = cat("if ", $2->code, " {\n", $3->code, "goto end", gotoRef, ";}");
+      char * s2 = cat(s1, "\n", $5->code, "end", gotoRef, ":", "");
+
+      // ---
+      // if (1 == 1) {
+        // printf("Condição verdadeira\n");
+        // goto end;
+      // }
+
+      // printf("Condição falsa\n");
+
+      // end:
+      // printf("Fim do programa\n");
+      // ---
+
+
       free(s1);
       freeRecord($2);
       freeRecord($3);
@@ -212,29 +175,23 @@ cond : IF exp cmds ENDIF {
     };
 
 return : RETURN exp ';' {
-        char * s = cat("return ", $2->code, ";", "", "", "");
+        char * s = cat("return ", $2->code, ";", "", "", "", "");
         freeRecord($2);
         $$ = createRecord(s, "");
         free(s);
       };
 
 print : PRINT '(' exps ')' ';' {
-        // printf("-----\n");
-        // printf("PRINT\n");
-        // printf("Valor: %s\n", $3->code);
-        // printf("Tipo: %s\n", $3->opt1);
-        // printf("-----\n");
-
         char *format;
         char * s;
         if (strcmp($3->opt1, "int") == 0) {
           format = "%d";
-          s = cat("printf(\"", format, "\\n\", ", $3->code, ");", "");
+          s = cat("printf(\"", format, "\\n\", ", $3->code, ");", "", "");
         } else if (strcmp($3->opt1, "float") == 0) {
           format = "%f";
-          s = cat("printf(\"", format, "\\n\", ", $3->code, ");", "");
+          s = cat("printf(\"", format, "\\n\", ", $3->code, ");", "", "");
         } else {
-          s = cat("puts", "(", $3->code, ")", ";", "");
+          s = cat("puts", "(", $3->code, ")", ";", "", "");
         }
 
         freeRecord($3);
@@ -243,35 +200,42 @@ print : PRINT '(' exps ')' ';' {
       };
 
 exp : exp OPPLUS exp {
-      char * s = cat($1->code, " + ", $3->code, "", "", "");
+      char * s = cat($1->code, " + ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | exp OPMINUS exp {
-      char * s = cat($1->code, " - ", $3->code, "", "", "");
+      char * s = cat($1->code, " - ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | exp OPMULT exp {
-      char * s = cat($1->code, " * ", $3->code, "", "", "");
+      char * s = cat($1->code, " * ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | exp OPDIV exp {
-      char * s = cat($1->code, " / ", $3->code, "", "", "");
+      char * s = cat($1->code, " / ", $3->code, "", "", "", "");
+      freeRecord($1);
+      freeRecord($3);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | exp OPEQ exp {
+      char * s = cat($1->code, " == ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | exp OPEXP exp {
-      char * s = cat("pow", "(", $3->code, ",", $1->code, ")");
+      char * s = cat("pow", "(", $3->code, ",", $1->code, ")", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
@@ -316,7 +280,7 @@ exp : exp OPPLUS exp {
     | '(' exp ')' {
       // printf("EXPRESSION\n");
       // printf("%s\n", $2->code);
-      char * s = cat("(", $2->code, ")", "", "", "");
+      char * s = cat("(", $2->code, ")", "", "", "", "");
       freeRecord($2);
       $$ = createRecord(s, "");
       free(s);
@@ -328,7 +292,7 @@ exp : exp OPPLUS exp {
 call : ID '(' exps_op ')' {
       // printf("exps_op\n");
       // printf("%s\n", $3->code);
-      char * s = cat($1, "(", $3->code, ")", "", "");
+      char * s = cat($1, "(", $3->code, ")", "", "", "");
       free($1);
       freeRecord($3);
       $$ = createRecord(s, "");
@@ -346,7 +310,7 @@ exps : exp {
       $$ = $1;
     }
     | exp ',' exps {
-      char * s = cat($1->code, ", ", $3->code, "", "", "");
+      char * s = cat($1->code, ", ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
@@ -366,6 +330,7 @@ int main(int argc, char **argv) {
   yyout = fopen(argv[2], "w");
 
   symbolTable = createSymbolTable(100);
+  gotoCounter = 0;
 
   code = yyparse();
 
@@ -382,11 +347,11 @@ int yyerror(char *msg) {
   return 0;
 }
 
-char *cat(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6) {
+char *cat(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7) {
   int tam;
   char *output;
 
-  tam = strlen(s1) + strlen(s2) + strlen(s3) + strlen(s4) + strlen(s5) + strlen(s6) + 1;
+  tam = strlen(s1) + strlen(s2) + strlen(s3) + strlen(s4) + strlen(s5) + strlen(s6) + strlen(s7) + 1;
   output = (char *) malloc(sizeof(char) *tam);
 
   if (!output) {
@@ -394,7 +359,7 @@ char *cat(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6) {
     exit(0);
   }
 
-  sprintf(output, "%s%s%s%s%s%s", s1, s2, s3, s4, s5, s6);
+  sprintf(output, "%s%s%s%s%s%s%s", s1, s2, s3, s4, s5, s6, s7);
 
   return output;
 }

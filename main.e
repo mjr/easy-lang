@@ -10,6 +10,21 @@ func bool f(bool a, bool b, bool c)
 endfunc
 
 main
+    // if (1 == 1)
+    //     print("f é verdadeiro");
+    // else
+    //     print("f é falso");
+    // endif
+
+    // print("middle");
+
+    // if (0 == 1)
+    //     print("f é verdadeiro");
+    // else
+    //     print("f é falso");
+    // endif
+
+    // print("final");
     if (f(true, false, true))
         print("f é verdadeiro");
     else
