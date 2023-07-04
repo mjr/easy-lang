@@ -1,7 +1,7 @@
 all: compile
 
 compile: lex.yy.c y.tab.c
-	gcc lex.yy.c y.tab.c ./lib/record.c -o compiler
+	gcc lex.yy.c y.tab.c ./lib/record.c ./lib/symbol-table.c -o compiler
 
 lex.yy.c: lexicon.l
 	lex lexicon.l
