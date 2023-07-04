@@ -27,9 +27,10 @@ int gotoCounter;
 %token MAIN ENDMAIN
 %token PRINT RETURN
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPEQ OPEXP
+%token WHILE ENDWHILE
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
-%type <rec> subprogs subprog args_op args arg main cmds vardecl cmd
+%type <rec> subprogs subprog args_op args arg main cmds vardecl cmd interation while 
 %type <rec> cond return print exp call exps_op exps
 
 %left OPPLUS OPMINUS
@@ -136,7 +137,22 @@ cmd : cond {
     }
     | print {
       $$ = $1;
+    }
+    | interation {
+      $$ = $1;
     };
+
+interation: while { $$ = $1; }
+            ;
+
+while: WHILE exp cmds ENDWHILE {
+        char * s = cat("while", $2->code, " {\n", $3->code, "}", "", "");
+        freeRecord($2);
+        freeRecord($3);
+        $$ = createRecord(s, "");
+        free(s);
+      };
+
 
 cond : IF exp cmds ENDIF {
       char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "");

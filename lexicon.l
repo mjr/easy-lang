@@ -19,6 +19,8 @@
 "endmain"               {return ENDMAIN;}
 "print"                 {return PRINT;}
 "return"                {return RETURN;}
+"while"                 {return WHILE;}
+"endwhile"              {return ENDWHILE;}
 "("                     {return yytext[0];}
 ")"                     {return yytext[0];}
 ","                     {return yytext[0];}
