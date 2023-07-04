@@ -28,7 +28,7 @@ SymbolTable *symbolTable;
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPEQ OPEXP
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
-%type <rec> subprogs subprog args_op args arg ids main cmds vardecl cmd
+%type <rec> subprogs subprog args_op args arg main cmds vardecl cmd
 %type <rec> cond return print exp call exps_op exps
 
 %left OPPLUS OPMINUS
@@ -76,31 +76,18 @@ args_op : {
 args : arg {
       $$ = $1;
     }
-    | arg ';' args {
-      char * s = cat($1->code, "; ", $3->code, "", "", "");
+    | arg ',' args {
+      char * s = cat($1->code, ", ", $3->code, "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     };
 
-arg : TYPE ids {
-      char * s = cat($1, " ", $2->code, "", "", "");
+arg : TYPE ID {
+      char * s = cat($1, " ", $2, "", "", "");
       free($1);
-      freeRecord($2);
-      $$ = createRecord(s, "");
-      free(s);
-    };
-
-
-ids : ID {
-      $$ = createRecord($1, "");
-      free($1);
-    }
-    | ID ',' ids {
-      char * s = cat($1, ", ", $3->code, "", "", "");
-      free($1);
-      freeRecord($3);
+      free($2);
       $$ = createRecord(s, "");
       free(s);
     };

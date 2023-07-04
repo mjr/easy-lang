@@ -1,4 +1,4 @@
-func bool f(bool a, b, c)
+func bool f(bool a, bool b, bool c)
     if (a)
         if (b)
             return true;
