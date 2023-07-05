@@ -15,6 +15,7 @@ char *cat(char *, char *, char *, char *, char *, char *, char *, char *, char *
 
 SymbolTable *symbolTable;
 int gotoCounter;
+int scope_count;
 %}
 
 %union {
@@ -61,6 +62,7 @@ subprogs : {
         };
 
 subprog : FUNC TYPE ID '(' args_op ')' cmds ENDFUNC {
+          scope_count++;
           char * s1 = cat($2, " ", $3, "(", $5->code, "", "", "", "", "");
           char * s2 = cat(s1, ")\n", "{\n", $7->code, "}", "", "", "", "", "");
           free(s1);
@@ -132,7 +134,12 @@ cmds : {
     };
 
 vardecl : TYPE ID ASSIGN exp ';' {
-          insertSymbol(symbolTable, $2, $1, 1);
+          char *type = lookupSymbolType(symbolTable, $2);
+          if (type != NULL) {
+            yyerror("variavel com mesmo nome já declarada");
+            exit(0);
+          }
+          insertSymbol(symbolTable, $2, $1, scope_count);
           char *s = cat($1, " ", $2, " = ", $4->code, ";", "", "", "", "");
           free($1);
           free($2);
@@ -141,7 +148,7 @@ vardecl : TYPE ID ASSIGN exp ';' {
           free(s);
         }
         | TYPE ID ';' {
-          insertSymbol(symbolTable, $2, $1, 1);
+          insertSymbol(symbolTable, $2, $1, scope_count);
           char *s = cat($1, " ", $2, ";", "", "", "", "", "", "");
           free($1);
           free($2);
@@ -149,7 +156,7 @@ vardecl : TYPE ID ASSIGN exp ';' {
           free(s);
         }
         | TYPE ID '[' INT ']' ';' {
-            insertSymbol(symbolTable, $2, $1, 1);
+            insertSymbol(symbolTable, $2, $1, scope_count);
             char *s = cat($1, " ", $2, "[", $4, "]", ";", "", "", "");
             free($1);
             free($2);
@@ -158,7 +165,7 @@ vardecl : TYPE ID ASSIGN exp ';' {
             free(s);
         }
         | TYPE ID '[' INT ']' '[' INT ']' ';' {
-            insertSymbol(symbolTable, $2, $1, 1);
+            insertSymbol(symbolTable, $2, $1, scope_count);
             char *s = cat($1, " ", $2, "[", $4, "]", "[", $7, "]", ";");
             free($1);
             free($2);
@@ -233,7 +240,11 @@ decrement_stmt : ID DECR ';' {
 assign: ID ASSIGN exp {
         //printf($3->code);
         //printf(" type\n");
-        // fazer busca sobre existencia da variavel e se é compativel
+        char *type = lookupSymbolType(symbolTable, $1);
+        if (type == NULL) {
+          yyerror("variavel não declarada");
+          exit(0);
+        }
         char * s = cat($1, "=", $3->code, "", "", "", "", "", "", "");
         free($1);
         freeRecord($3);
@@ -446,13 +457,11 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | ID {
-      // printf("IDENTIFY\n");
       char *type = lookupSymbolType(symbolTable, $1);
-      // printf("%s\n", type);
-      // printf("%s\n", $1);
-      if (type == NULL) {
-        $$ = createRecord($1, "");
-      } else {
+        if (type == NULL) {
+          yyerror("variavel não declarada");
+          exit(0);
+        } else {
         $$ = createRecord($1, type);
       }
       free($1);
@@ -640,13 +649,14 @@ int main(int argc, char **argv) {
 
   symbolTable = createSymbolTable(100);
   gotoCounter = 0;
+  scope_count = 0;
 
   code = yyparse();
 
   fclose(yyin);
   fclose(yyout);
 
-  // display(symbolTable);
+  //display(symbolTable);
 
   destroySymbolTable(symbolTable);
 
