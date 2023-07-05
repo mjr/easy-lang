@@ -9,6 +9,13 @@ func bool f(bool a, bool b, bool c)
     return false;
 endfunc
 
+func int endereco(int x1, int &x2, int x3)
+    int var;
+    &var = 2;
+    var = &x2;
+    return false;
+endfunc
+
 main
     // if (1 == 1)
     //     print("f é verdadeiro");
@@ -53,4 +60,7 @@ main
     int matriz[5][5];
     matriz[2][3] = 5;
     matriz[i + 1][c + 1] = 4;
+
+    int varx;
+    int address = endereco(c, &i, varx);
 endmain

@@ -35,6 +35,7 @@
 "/"                     {return OPDIV;}
 "=="                    {return OPEQ;}
 "**"                    {return OPEXP;}
+"&"                     {return yytext[0];}
 "bool"                  {yylval.sValue = strdup("bool"); return TYPE;}
 "int"                   {yylval.sValue = strdup("int"); return TYPE;}
 "float"                 {yylval.sValue = strdup("float"); return TYPE;}
