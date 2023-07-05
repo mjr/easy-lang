@@ -378,6 +378,8 @@ int main(int argc, char **argv) {
   fclose(yyin);
   fclose(yyout);
 
+  display(symbolTable);
+
   destroySymbolTable(symbolTable);
 
   return code;

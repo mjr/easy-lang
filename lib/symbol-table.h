@@ -17,4 +17,6 @@ int hash(const char *str, int size);
 void insertSymbol(SymbolTable *table, const char *identifier, const char *type, const int scope);
 char* lookupSymbolType(SymbolTable *table, const char *identifier);
 
+void display(SymbolTable* createSymbolTable);
+
 #endif
