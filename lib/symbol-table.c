@@ -2,15 +2,48 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define CAPACITY 32
+
 typedef struct SymbolTableEntry {
   char *identifier;
   char *type;
+  int scope;
 } SymbolTableEntry;
 
 typedef struct SymbolTable {
   SymbolTableEntry **entries;
   int size;
 } SymbolTable;
+
+int stack[CAPACITY];
+int pointer = 1;
+
+void push(int __key) {
+    if (pointer < CAPACITY)
+        stack[pointer++] = __key;
+}
+
+void pop(void) {
+    pointer -= 1;
+}
+
+int top(void) {
+    return stack[pointer-1];
+}
+
+int previous(int __key) {
+    for (int i = 0; i < pointer; ++i) 
+        if (stack[i] == __key)
+            return stack[i-1];
+    return -1;
+}
+
+void print_stack() {
+    for (int i = 0; i < pointer; ++i) 
+        printf("%d", stack[i]);
+    printf(" ----- STACK\n");
+}
+
 
 SymbolTable* createSymbolTable(int size) {
   SymbolTable *table = malloc(sizeof(SymbolTable));
@@ -42,11 +75,12 @@ int hash(const char *str, int size) {
   return hash;
 }
 
-void insertSymbol(SymbolTable *table, const char *identifier, const char *type) {
+void insertSymbol(SymbolTable *table, const char *identifier, const char *type, const int scope) {
   int index = hash(identifier, table->size);
   SymbolTableEntry *entry = malloc(sizeof(SymbolTableEntry));
   entry->identifier = strdup(identifier);
   entry->type = strdup(type);
+  entry->scope = scope;
   table->entries[index] = entry;
 }
 
@@ -57,4 +91,15 @@ char* lookupSymbolType(SymbolTable *table, const char *identifier) {
     return entry->type;
   }
   return NULL;
+}
+
+void display(SymbolTable* createSymbolTable) {
+    for (int i = 0; i < 100; ++i) {
+        if (createSymbolTable->entries[i] != NULL) {
+            printf("#### symbol #%s ####\n", createSymbolTable->entries[i]->identifier);
+            printf("#### Scope #%d ####\n", createSymbolTable->entries[i]->scope);
+            //printf("\ttype %s\n", hash_table[i]->symbol->type);
+            //printf("\tscope %d\n", hash_table[i]->symbol->scope);
+        }
+    }
 }
