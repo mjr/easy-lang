@@ -36,11 +36,14 @@ main
     // int c = 4;
     // print(x ** 2 - y + c);
 
+    bool isOk = f(true, true,true);
+
     float x = 0.2;
     float y = 0.1;
     int c = 1;
     int i = c;
-    c = 2;
+    str text = "a";
+    //c = 1 + "a";
     float xexp = x ** 2;
     float result = xexp - y + c;
     print(result);
