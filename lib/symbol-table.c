@@ -80,6 +80,7 @@ void insertSymbol(SymbolTable *table, const char *identifier, const char *type, 
   SymbolTableEntry *entry = malloc(sizeof(SymbolTableEntry));
   entry->identifier = strdup(identifier);
   entry->type = strdup(type);
+  entry->scope = scope;
   table->entries[index] = entry;
 }
 
@@ -90,4 +91,15 @@ char* lookupSymbolType(SymbolTable *table, const char *identifier) {
     return entry->type;
   }
   return NULL;
+}
+
+void display(SymbolTable* createSymbolTable) {
+    for (int i = 0; i < 100; ++i) {
+        if (createSymbolTable->entries[i] != NULL) {
+            printf("#### symbol #%s ####\n", createSymbolTable->entries[i]->identifier);
+            printf("#### Scope #%d ####\n", createSymbolTable->entries[i]->scope);
+            //printf("\ttype %s\n", hash_table[i]->symbol->type);
+            //printf("\tscope %d\n", hash_table[i]->symbol->scope);
+        }
+    }
 }
