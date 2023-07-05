@@ -127,6 +127,15 @@ vardecl : TYPE ID ASSIGN exp ';' {
           freeRecord($4);
           $$ = createRecord(s, "");
           free(s);
+        }
+        | TYPE ID '[' INT ']' ';' {
+            insertSymbol(symbolTable, $2, $1, 1);
+            char *s = cat($1, " ", $2, "[", $4, "]", ";");
+            free($1);
+            free($2);
+            free($4);
+            $$ = createRecord(s, "");
+            free(s);
         };
 
 cmd : cond {
@@ -162,8 +171,15 @@ assign: ID ASSIGN exp {
         freeRecord($3);
         $$ = createRecord(s, "");
         free(s);
-};
-/* =========== */
+      }
+      | ID '[' exp ']' ASSIGN exp {
+                  char *s = cat($1, "[", $3->code, "]", " = ", $6->code, "");
+                  free($1);
+                  freeRecord($3);
+                  freeRecord($6);
+                  $$ = createRecord(s, "");
+                  free(s);
+      };
 
 interation: while { $$ = $1; }
             ;
@@ -325,6 +341,13 @@ exp : exp OPPLUS exp {
       freeRecord($2);
       $$ = createRecord(s, "");
       free(s);
+    }
+    | ID '[' exp ']' {
+        char *s = cat($1, "[", $3->code, "]", "", "", "");
+        free($1);
+        freeRecord($3);
+        $$ = createRecord(s, "");
+        free(s);
     }
     | call {
       $$ = $1;
