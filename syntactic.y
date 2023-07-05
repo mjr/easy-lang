@@ -196,15 +196,6 @@ cmd : cond {
       $$ = $1;
     };
 
-
-read : READ '(' TYPE ')'{
-        char * s = cat("", "", $3, "", "", "", "", "", "", "");
-        free($3);
-        $$ = createRecord(s, "");
-        free(s);
-      };
-
-
 /* atribuição direta ===== */
 assign_stmt : assign ';' {
         char * s = cat($1->code, ";", "\n", "", "", "", "", "", "", "");
@@ -277,12 +268,6 @@ assign: ID ASSIGN exp {
         char * s = cat($1, "=", "&", $4, "", "", "", "", "", "");
         free($1);
         free($4);
-        $$ = createRecord(s, "");
-        free(s);
-      }
-      | ID ASSIGN read ';' {
-        char * s = cat($1, "=", "scanf", "(", "", "", "", "", "", "");
-        free($1);
         $$ = createRecord(s, "");
         free(s);
       }
