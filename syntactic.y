@@ -283,6 +283,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp OPMINUS exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " - ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
@@ -290,6 +291,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp OPMULT exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " * ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
@@ -297,6 +299,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp OPDIV exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " / ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
@@ -304,6 +307,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp OPEQ exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " == ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
@@ -311,6 +315,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp OPEXP exp {
+      checkType($1->opt1, $3->opt1);
       char * s = cat("pow", "(", $3->code, ",", $1->code, ")", "", "", "", "");
       freeRecord($1);
       freeRecord($3);

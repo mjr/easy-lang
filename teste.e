@@ -1,7 +1,7 @@
 main 
 
-int a = 1;
+float a = 1;
 str b = "oi";
-int c = a + b;
+int c = a - b;
 
 endmain
