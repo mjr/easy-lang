@@ -120,9 +120,7 @@ cmds : {
     };
 
 vardecl : TYPE ID ASSIGN exp ';' {
-          insertSymbol(symbolTable, $2, $1);
-
-          // checar variaveis duplicadas aqui ?
+          insertSymbol(symbolTable, $2, $1, 1);
           char *s = cat($1, " ", $2, " = ", $4->code, ";", "");
           free($1);
           free($2);
@@ -147,7 +145,7 @@ cmd : cond {
       $$ = $1;
     };
 
-/* atribuição direta  */
+/* atribuição direta ===== */
 assign_stmt : assign ';' {
         char * s = cat($1->code, ";", "\n", "", "", "", "");
         freeRecord($1);
@@ -156,6 +154,8 @@ assign_stmt : assign ';' {
 };
 
 assign: ID ASSIGN exp {
+        //printf($3->code);
+        //printf(" type\n");
         // fazer busca sobre existencia da variavel e se é compativel
         char * s = cat($1, "=", $3->code, "", "", "", "");
         free($1);
@@ -163,6 +163,7 @@ assign: ID ASSIGN exp {
         $$ = createRecord(s, "");
         free(s);
 };
+/* =========== */
 
 interation: while { $$ = $1; }
             ;
@@ -177,6 +178,7 @@ while: WHILE exp cmds ENDWHILE {
 
 
 cond : IF exp cmds ENDIF {
+      // exp só pode ser expressão bolleana
       char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "");
       freeRecord($2);
       freeRecord($3);

@@ -2,15 +2,48 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define CAPACITY 32
+
 typedef struct SymbolTableEntry {
   char *identifier;
   char *type;
+  int scope;
 } SymbolTableEntry;
 
 typedef struct SymbolTable {
   SymbolTableEntry **entries;
   int size;
 } SymbolTable;
+
+int stack[CAPACITY];
+int pointer = 1;
+
+void push(int __key) {
+    if (pointer < CAPACITY)
+        stack[pointer++] = __key;
+}
+
+void pop(void) {
+    pointer -= 1;
+}
+
+int top(void) {
+    return stack[pointer-1];
+}
+
+int previous(int __key) {
+    for (int i = 0; i < pointer; ++i) 
+        if (stack[i] == __key)
+            return stack[i-1];
+    return -1;
+}
+
+void print_stack() {
+    for (int i = 0; i < pointer; ++i) 
+        printf("%d", stack[i]);
+    printf(" ----- STACK\n");
+}
+
 
 SymbolTable* createSymbolTable(int size) {
   SymbolTable *table = malloc(sizeof(SymbolTable));
@@ -42,7 +75,7 @@ int hash(const char *str, int size) {
   return hash;
 }
 
-void insertSymbol(SymbolTable *table, const char *identifier, const char *type) {
+void insertSymbol(SymbolTable *table, const char *identifier, const char *type, const int scope) {
   int index = hash(identifier, table->size);
   SymbolTableEntry *entry = malloc(sizeof(SymbolTableEntry));
   entry->identifier = strdup(identifier);
