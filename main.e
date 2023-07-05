@@ -50,4 +50,7 @@ main
     int vetor[5];
     vetor[0] = 2;
     vetor[i + c] = 6;
+    int matriz[5][5];
+    matriz[2][3] = 5;
+    matriz[i + 1][c + 1] = 4;
 endmain
