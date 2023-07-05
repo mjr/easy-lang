@@ -307,17 +307,17 @@ cond : IF exp cmds ENDIF {
       freeRecord($5);
       $$ = createRecord(s, "");
       free(s);
-    }
-    | IF exp cmds ELSE IF exp cmds cond {
-      char * s = cat("if ", $2->code, " {\n", $3->code, "} else if ", $6->code, " {\n", $7->code, "}", $8->code);
-      freeRecord($2);
-      freeRecord($3);
-      freeRecord($6);
-      freeRecord($7);
-      freeRecord($8);
-      $$ = createRecord(s, "");
-      free(s);
     };
+    // | IF exp cmds ELSE IF exp cmds cond {
+    //   char * s = cat("if ", $2->code, " {\n", $3->code, "} else if ", $6->code, " {\n", $7->code, "}", $8->code);
+    //   freeRecord($2);
+    //   freeRecord($3);
+    //   freeRecord($6);
+    //   freeRecord($7);
+    //   freeRecord($8);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // };
 
 return : RETURN exp ';' {
         char * s = cat("return ", $2->code, ";", "", "", "", "", "", "", "");
@@ -406,6 +406,14 @@ exp : exp OPPLUS exp {
       $$ = createRecord(s, "");
       free(s);
     }
+    | exp OPNEQ exp {
+      checkType($1->opt1, $3->opt1);
+      char * s = cat($1->code, " != ", $3->code, "", "", "", "", "", "", "");
+      freeRecord($1);
+      freeRecord($3);
+      $$ = createRecord(s, "");
+      free(s);
+    }
     | exp OPGT exp {
       char * s = cat($1->code, " > ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
@@ -478,31 +486,31 @@ exp : exp OPPLUS exp {
       $$ = createRecord($1, "bool");
       free($1);
     }
-    | INCR ID ';' {
-      char *s = cat($2, "++", "", "", "", "", "", "", "", "");
-      free($2);
-      $$ = createRecord(s, "");
-      free(s);
-    }
-    | DECR ID ';' {
-      char *s = cat($2, "--", "", "", "", "", "", "", "", "");
-      free($2);
-      $$ = createRecord(s, "");
-      free(s);
-    }
-    | ID INCR ';' {
-      printf("ID INCR\n");
-      char *s = cat($1, "++", "", "", "", "", "", "", "", "");
-      free($1);
-      $$ = createRecord(s, "");
-      free(s);
-    }
-    | ID DECR ';' {
-      char *s = cat($1, "--", "", "", "", "", "", "", "", "");
-      free($1);
-      $$ = createRecord(s, "");
-      free(s);
-    }
+    // | INCR ID ';' {
+    //   char *s = cat($2, "++", "", "", "", "", "", "", "", "");
+    //   free($2);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
+    // | DECR ID ';' {
+    //   char *s = cat($2, "--", "", "", "", "", "", "", "", "");
+    //   free($2);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
+    // | ID INCR ';' {
+    //   printf("ID INCR\n");
+    //   char *s = cat($1, "++", "", "", "", "", "", "", "", "");
+    //   free($1);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
+    // | ID DECR ';' {
+    //   char *s = cat($1, "--", "", "", "", "", "", "", "", "");
+    //   free($1);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
     | '(' exp ')' {
       // printf("EXPRESSION\n");
       // printf("%s\n", $2->code);
@@ -526,10 +534,10 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | LGNOT exp %prec LGNOT {
-      // char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
-      // freeRecord($2);
-      // $$ = createRecord(s, "");
-      // free(s);
+      char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
+      freeRecord($2);
+      $$ = createRecord(s, "");
+      free(s);
     }
     // | LGNOT exp {
     //   char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
