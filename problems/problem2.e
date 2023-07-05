@@ -12,7 +12,7 @@ main
 
         if (num < 0)
             print("Digite os núm");
-            // break;
+            break;
         endif
 
         if (num >= 0 and num <= 25)

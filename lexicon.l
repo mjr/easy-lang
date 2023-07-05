@@ -20,6 +20,7 @@
 "print"                 {return PRINT;}
 "input"                 {return INPUT;}
 "return"                {return RETURN;}
+"break"                 {return BREAK;}
 "while"                 {return WHILE;}
 "endwhile"              {return ENDWHILE;}
 "("                     {return yytext[0];}

@@ -25,7 +25,7 @@ int gotoCounter;
 %token FUNC ENDFUNC
 %token IF ELSE ENDIF
 %token MAIN ENDMAIN
-%token PRINT INPUT RETURN
+%token PRINT INPUT RETURN BREAK
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPMOD OPEQ OPNEQ OPGT OPLT OPGTE OPLTE OPEXP
 %token INCR DECR
 %token LGAND LGOR LGNOT
@@ -33,11 +33,12 @@ int gotoCounter;
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
 %type <rec> subprogs subprog args_op args arg main cmds vardecl cmd interation while 
-%type <rec> cond return print input exp call exps_op exps assign_stmt assign
+%type <rec> cond return break print input exp call exps_op exps assign_stmt assign increment_stmt decrement_stmt
 
 %left OPPLUS OPMINUS
 %left OPMULT OPDIV OPMOD OPEQ OPNEQ OPGT OPLT OPGTE OPLTE OPEXP
-%left LGAND LGOR LGNOT
+%left LGAND LGOR
+%right LGNOT
 
 %start prog
 
@@ -173,6 +174,9 @@ cmd : cond {
     | return {
       $$ = $1;
     }
+    | break {
+      $$ = $1;
+    }
     | print {
       $$ = $1;
     }
@@ -184,6 +188,12 @@ cmd : cond {
     }
     | assign_stmt {
       $$ = $1;
+    }
+    | increment_stmt {
+      $$ = $1;
+    }
+    | decrement_stmt {
+      $$ = $1;
     };
 
 /* atribuição direta ===== */
@@ -193,6 +203,32 @@ assign_stmt : assign ';' {
         $$ = createRecord(s, "");
         free(s);
 };
+
+increment_stmt : ID INCR ';' {
+                 char *s = cat($1, "++;", "", "", "", "", "", "", "", "");
+                 free($1);
+                 $$ = createRecord(s, "");
+                 free(s);
+               }
+               | INCR ID ';' {
+                 char *s = cat("++", $2, ";", "", "", "", "", "", "", "");
+                 free($2);
+                 $$ = createRecord(s, "");
+                 free(s);
+               };
+
+decrement_stmt : ID DECR ';' {
+                 char *s = cat($1, "--;", "", "", "", "", "", "", "", "");
+                 free($1);
+                 $$ = createRecord(s, "");
+                 free(s);
+               }
+               | DECR ID ';' {
+                 char *s = cat("--", $2, ";", "", "", "", "", "", "", "");
+                 free($2);
+                 $$ = createRecord(s, "");
+                 free(s);
+               };
 
 assign: ID ASSIGN exp {
         //printf($3->code);
@@ -289,6 +325,12 @@ cond : IF exp cmds ENDIF {
 return : RETURN exp ';' {
         char * s = cat("return ", $2->code, ";", "", "", "", "", "", "", "");
         freeRecord($2);
+        $$ = createRecord(s, "");
+        free(s);
+      };
+
+break : BREAK ';' {
+        char * s = cat("break;", "", "", "", "", "", "", "", "", "");
         $$ = createRecord(s, "");
         free(s);
       };
@@ -452,6 +494,7 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | ID INCR ';' {
+      printf("ID INCR\n");
       char *s = cat($1, "++", "", "", "", "", "", "", "", "");
       free($1);
       $$ = createRecord(s, "");
@@ -485,12 +528,18 @@ exp : exp OPPLUS exp {
       $$ = createRecord(s, "");
       free(s);
     }
-    | LGNOT exp {
-      char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
-      freeRecord($2);
-      $$ = createRecord(s, "");
-      free(s);
+    | LGNOT exp %prec LGNOT {
+      // char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
+      // freeRecord($2);
+      // $$ = createRecord(s, "");
+      // free(s);
     }
+    // | LGNOT exp {
+    //   char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
+    //   freeRecord($2);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
     | ID '[' exp ']' {
         char *s = cat($1, "[", $3->code, "]", "", "", "", "", "", "");
         free($1);
@@ -518,32 +567,32 @@ call : ID '(' exps_op ')' {
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
-    }
-    | ID '(' exps_op ')' LGAND exp {
-      char * s = cat($1, "(", $3->code, ") && ", $6->code, "", "", "", "", "");
-      free($1);
-      freeRecord($3);
-      freeRecord($6);
-      $$ = createRecord(s, "");
-      free(s);
-    }
-    | ID '(' exps_op ')' LGOR exp {
-      char * s = cat($1, "(", $3->code, ") || ", $6->code, "", "", "", "", "");
-      free($1);
-      freeRecord($3);
-      freeRecord($6);
-      $$ = createRecord(s, "");
-      free(s);
-    }
-    | ID '(' exps_op ')' LGNOT exp {
-      // char * s = cat($1, "(!", $6->code, ")", "", "", "");
-      char * s = cat($1, "(", $3->code, ") ! ", $6->code, "", "", "", "", "");
-      free($1);
-      freeRecord($3);
-      freeRecord($6);
-      $$ = createRecord(s, "");
-      free(s);
     };
+    // | ID '(' exps_op ')' LGAND exp {
+    //   char * s = cat($1, "(", $3->code, ") && ", $6->code, "", "", "", "", "");
+    //   free($1);
+    //   freeRecord($3);
+    //   freeRecord($6);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
+    // | ID '(' exps_op ')' LGOR exp {
+    //   char * s = cat($1, "(", $3->code, ") || ", $6->code, "", "", "", "", "");
+    //   free($1);
+    //   freeRecord($3);
+    //   freeRecord($6);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // }
+    // | ID '(' exps_op ')' LGNOT exp {
+    //   // char * s = cat($1, "(!", $6->code, ")", "", "", "");
+    //   char * s = cat($1, "(", $3->code, ") ! ", $6->code, "", "", "", "", "");
+    //   free($1);
+    //   freeRecord($3);
+    //   freeRecord($6);
+    //   $$ = createRecord(s, "");
+    //   free(s);
+    // };
 
 exps_op : {
           $$ = createRecord("","");
@@ -597,7 +646,7 @@ int main(int argc, char **argv) {
   fclose(yyin);
   fclose(yyout);
 
-  display(symbolTable);
+  // display(symbolTable);
 
   destroySymbolTable(symbolTable);
 
