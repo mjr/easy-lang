@@ -33,9 +33,16 @@
 "-"                     {return OPMINUS;}
 "*"                     {return OPMULT;}
 "/"                     {return OPDIV;}
-"=="                    {return OPEQ;}
 "**"                    {return OPEXP;}
 "&"                     {return yytext[0];}
+"=="                    {return OPEQ;}
+"!="                    {return DIFF;}
+">"                     {return HIGHER;}
+"<"                     {return LESS;}
+">="                    {return HIGHER_EQ;}
+"<="                    {return LESS_EQ;}
+"&&"                    {return AND;}
+"!"                     {return NOT;}
 "bool"                  {yylval.sValue = strdup("bool"); return TYPE;}
 "int"                   {yylval.sValue = strdup("int"); return TYPE;}
 "float"                 {yylval.sValue = strdup("float"); return TYPE;}
