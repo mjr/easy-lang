@@ -44,4 +44,7 @@ main
     float xexp = x ** 2;
     float result = xexp - y + c;
     print(result);
+    int vetor[5];
+    vetor[0] = 2;
+    vetor[i + c] = 6;
 endmain
