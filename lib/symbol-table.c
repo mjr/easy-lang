@@ -93,6 +93,15 @@ char* lookupSymbolType(SymbolTable *table, const char *identifier) {
   return NULL;
 }
 
+char* lookupInScopeSymbolType(SymbolTable *table, const char *identifier, const int scope) {
+  int index = hash(identifier, table->size);
+  SymbolTableEntry *entry = table->entries[index];
+  if (entry != NULL && strcmp(entry->identifier, identifier) == 0 && (entry->scope == scope) ) {
+    return entry->type;
+  }
+  return NULL;
+}
+
 void display(SymbolTable* createSymbolTable) {
     for (int i = 0; i < 100; ++i) {
         if (createSymbolTable->entries[i] != NULL) {

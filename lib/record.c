@@ -11,7 +11,7 @@ void freeRecord(record * r){
   }
 }
 
-record * createRecord(char * c1, char * c2){
+record * createRecord(char * c1, char * c2, char * c3){
   record * r = (record *) malloc(sizeof(record));
 
   if (!r) {
@@ -21,6 +21,7 @@ record * createRecord(char * c1, char * c2){
 
   r->code = strdup(c1);
   r->opt1 = strdup(c2);
+  r->result_type = strdup(c3);
 
   return r;
 }
