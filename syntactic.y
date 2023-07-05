@@ -93,7 +93,15 @@ arg : TYPE ID {
       free($2);
       $$ = createRecord(s, "");
       free(s);
-    };
+    }
+    | TYPE '&' ID {
+      char * s = cat($1, " *", $3, "", "", "", "", "", "", "");
+      free($1);
+      free($3);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    ;
 
 main : MAIN cmds ENDMAIN {
       char * s = cat("int main() {\n", $2->code, "}", "", "", "", "", "", "", "");
@@ -126,6 +134,14 @@ vardecl : TYPE ID ASSIGN exp ';' {
           free($1);
           free($2);
           freeRecord($4);
+          $$ = createRecord(s, "");
+          free(s);
+        }
+        | TYPE ID ';' {
+          insertSymbol(symbolTable, $2, $1, 1);
+          char *s = cat($1, " ", $2, ";", "", "", "", "", "", "");
+          free($1);
+          free($2);
           $$ = createRecord(s, "");
           free(s);
         }
@@ -199,7 +215,22 @@ assign: ID ASSIGN exp {
                   freeRecord($9);
                   $$ = createRecord(s, "");
                   free(s);
-      };
+      }
+      | '&' ID ASSIGN exp {
+        char * s = cat("&", $2, "=", $4->code, "", "", "", "", "", "");
+        free($2);
+        freeRecord($4);
+        $$ = createRecord(s, "");
+        free(s);
+      }
+      | ID ASSIGN '&' ID {
+        char * s = cat($1, "=", "&", $4, "", "", "", "", "", "");
+        free($1);
+        free($4);
+        $$ = createRecord(s, "");
+        free(s);
+      }
+      ;
 
 interation: while { $$ = $1; }
             ;
@@ -426,7 +457,21 @@ exps : exp {
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
-    };
+    }
+    | '&' ID {
+      char * s = cat("&", $2, "", "", "", "", "", "", "", "");
+      free($2);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | '&' ID ',' exps {
+      char * s = cat("&", $2, ", ", $4->code, "", "", "", "", "", "");
+      free($2);
+      freeRecord($4);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    ;
 %%
 
 int main(int argc, char **argv) {

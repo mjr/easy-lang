@@ -34,6 +34,7 @@
 "*"                     {return OPMULT;}
 "/"                     {return OPDIV;}
 "**"                    {return OPEXP;}
+"&"                     {return yytext[0];}
 "=="                    {return OPEQ;}
 "!="                    {return DIFF;}
 ">"                     {return HIGHER;}
