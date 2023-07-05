@@ -27,6 +27,7 @@ int gotoCounter;
 %token MAIN ENDMAIN
 %token PRINT RETURN
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPEQ OPEXP
+%token HIGHER HIGHER_EQ LESS LESS_EQ DIFF AND NOT 
 %token WHILE ENDWHILE
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
@@ -34,7 +35,7 @@ int gotoCounter;
 %type <rec> cond return print exp call exps_op exps assign_stmt assign
 
 %left OPPLUS OPMINUS
-%left OPMULT OPDIV OPEXP OPEQ
+%left OPMULT OPDIV OPEXP OPEQ HIGHER HIGHER_EQ LESS LESS_EQ DIFF AND NOT 
 
 %start prog
 
@@ -293,6 +294,20 @@ exp : exp OPPLUS exp {
     }
     | exp OPEXP exp {
       char * s = cat("pow", "(", $3->code, ",", $1->code, ")", "");
+      freeRecord($1);
+      freeRecord($3);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | exp HIGHER exp {
+      char * s = cat($1->code, " > ", $3->code, "", "", "", "");
+      freeRecord($1);
+      freeRecord($3);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | exp HIGHER_EQ exp {
+      char * s = cat($1->code, " >= ", $3->code, "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");

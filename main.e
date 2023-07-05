@@ -31,6 +31,12 @@ main
         print("f é falso");
     endif
 
+    if (2 > 3)
+        print("f é verdadeiro");
+    else
+        print("f é falso");
+    endif
+
     // int x = 2;
     // int y = 1;
     // int c = 4;
