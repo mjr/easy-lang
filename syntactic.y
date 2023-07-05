@@ -324,14 +324,14 @@ exp : exp OPPLUS exp {
       free(s);
     }
     | exp HIGHER exp {
-      char * s = cat($1->code, " > ", $3->code, "", "", "", "");
+      char * s = cat($1->code, " > ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
     | exp HIGHER_EQ exp {
-      char * s = cat($1->code, " >= ", $3->code, "", "", "", "");
+      char * s = cat($1->code, " >= ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
       $$ = createRecord(s, "");
