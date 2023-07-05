@@ -40,6 +40,7 @@ main
     float y = 0.1;
     int c = 1;
     int i = c;
+    c = 2;
     float xexp = x ** 2;
     float result = xexp - y + c;
     print(result);

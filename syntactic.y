@@ -31,7 +31,7 @@ int gotoCounter;
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
 %type <rec> subprogs subprog args_op args arg main cmds vardecl cmd interation while 
-%type <rec> cond return print exp call exps_op exps
+%type <rec> cond return print exp call exps_op exps assign_stmt assign
 
 %left OPPLUS OPMINUS
 %left OPMULT OPDIV OPEXP OPEQ
@@ -121,6 +121,8 @@ cmds : {
 
 vardecl : TYPE ID ASSIGN exp ';' {
           insertSymbol(symbolTable, $2, $1);
+
+          // checar variaveis duplicadas aqui ?
           char *s = cat($1, " ", $2, " = ", $4->code, ";", "");
           free($1);
           free($2);
@@ -140,7 +142,27 @@ cmd : cond {
     }
     | interation {
       $$ = $1;
+    }
+    | assign_stmt {
+      $$ = $1;
     };
+
+/* atribuição direta  */
+assign_stmt : assign ';' {
+        char * s = cat($1->code, ";", "\n", "", "", "", "");
+        freeRecord($1);
+        $$ = createRecord(s, "");
+        free(s);
+};
+
+assign: ID ASSIGN exp {
+        // fazer busca sobre existencia da variavel e se é compativel
+        char * s = cat($1, "=", $3->code, "", "", "", "");
+        free($1);
+        freeRecord($3);
+        $$ = createRecord(s, "");
+        free(s);
+};
 
 interation: while { $$ = $1; }
             ;
