@@ -1,0 +1,30 @@
+
+int main() {
+int num = null;
+int count1 = 0;
+int count2 = 0;
+int count3 = 0;
+int count4 = 0;
+puts("Digite os números (encerre com um número negativo):");
+while ((1)) {
+scanf("%c\n", &"%d", num);
+if (num < 0) {
+puts("Digite os núm");
+break;
+}
+if (num >= 0 && num <= 25) {
+count1++;
+} else if (num >= 26 && num <= 50) {
+count2++;
+} else if (num >= 51 && num <= 75) {
+count3++;
+} else if (num >= 76 && num <= 100) {
+count4++;
+}
+}
+puts("Quantidade de números nos intervalos:");
+puts("[0, 25]: %d", count1);
+puts("[26, 50]: %d", count2);
+puts("[51, 75]: %d", count3);
+puts("[76, 100]: %d", count4);
+}

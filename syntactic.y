@@ -29,11 +29,11 @@ int gotoCounter;
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPMOD OPEQ OPNEQ OPGT OPLT OPGTE OPLTE OPEXP
 %token INCR DECR
 %token LGAND LGOR LGNOT
-%token WHILE ENDWHILE
+%token FOR ENDFOR WHILE ENDWHILE
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
-%type <rec> subprogs subprog args_op args arg main cmds vardecl cmd interation while 
-%type <rec> cond return break print input exp call exps_op exps assign_stmt assign increment_stmt decrement_stmt
+%type <rec> subprogs subprog args_op args arg main cmds vardecl cmd
+%type <rec> cond loop return break print input exp call exps_op exps assign_stmt assign increment_stmt decrement_stmt
 
 %left OPPLUS OPMINUS
 %left OPMULT OPDIV OPMOD OPEQ OPNEQ OPGT OPLT OPGTE OPLTE OPEXP
@@ -171,6 +171,9 @@ vardecl : TYPE ID ASSIGN exp ';' {
 cmd : cond {
       $$ = $1;
     }
+    | loop {
+      $$ = $1;
+    }
     | return {
       $$ = $1;
     }
@@ -183,9 +186,9 @@ cmd : cond {
     | input {
       $$ = $1;
     }
-    | interation {
-      $$ = $1;
-    }
+    // | interation {
+    //   $$ = $1;
+    // }
     | assign_stmt {
       $$ = $1;
     }
@@ -194,6 +197,24 @@ cmd : cond {
     }
     | decrement_stmt {
       $$ = $1;
+    };
+
+
+loop : FOR '(' exp ';' exp ';' exp ')' cmds ENDFOR {
+      char * s = cat("for (", $3->code, "; ", $5->code, "; ", $7->code, ") {\n", $9->code, "}", "");
+      freeRecord($3);
+      freeRecord($5);
+      freeRecord($7);
+      freeRecord($9);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | WHILE exp cmds ENDWHILE {
+      char * s = cat("while (", $2->code, ") {\n", $3->code, "}", "", "", "", "", "");
+      freeRecord($2);
+      freeRecord($3);
+      $$ = createRecord(s, "");
+      free(s);
     };
 
 /* atribuição direta ===== */
@@ -270,56 +291,32 @@ assign: ID ASSIGN exp {
         free($4);
         $$ = createRecord(s, "");
         free(s);
-      }
-      ;
-
-interation: while { $$ = $1; }
-            ;
-
-while: WHILE exp cmds ENDWHILE {
-        char * s = cat("while ", $2->code, " {\n", $3->code, "}", "", "", "", "", "");
-        freeRecord($2);
-        freeRecord($3);
-        $$ = createRecord(s, "");
-        free(s);
       };
 
-
 cond : IF exp cmds ENDIF {
-      // exp só pode ser expressão bolleana
       char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
       $$ = createRecord(s, "");
       free(s);
     }
-    | IF exp cmds ELSE cmds ENDIF {
-      char gotoRef[] = "end";
-      sprintf(gotoRef, "%d", gotoCounter);
-      gotoCounter++;
-
-      char * s1 = cat("if ", $2->code, " {\n", $3->code, "goto end", gotoRef, ";}", "", "", "");
-      char * s2 = cat(s1, "\n", $5->code, "end", gotoRef, ":", "", "", "", "");
-
-      // ---
-      // if (1 == 1) {
-        // printf("Condição verdadeira\n");
-        // goto end;
-      // }
-
-      // printf("Condição falsa\n");
-
-      // end:
-      // printf("Fim do programa\n");
-      // ---
-
-
-      free(s1);
+    | IF exp cmds ELSE cond {
+      char * s = cat("if ", $2->code, " {\n", $3->code, "} else ", $5->code, "", "", "", "");
       freeRecord($2);
       freeRecord($3);
       freeRecord($5);
-      $$ = createRecord(s2, "");
-      free(s2);
+      $$ = createRecord(s, "");
+      free(s);
+    }
+    | IF exp cmds ELSE IF exp cmds cond {
+      char * s = cat("if ", $2->code, " {\n", $3->code, "} else if ", $6->code, " {\n", $7->code, "}", $8->code);
+      freeRecord($2);
+      freeRecord($3);
+      freeRecord($6);
+      freeRecord($7);
+      freeRecord($8);
+      $$ = createRecord(s, "");
+      free(s);
     };
 
 return : RETURN exp ';' {

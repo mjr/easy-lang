@@ -21,6 +21,8 @@
 "input"                 {return INPUT;}
 "return"                {return RETURN;}
 "break"                 {return BREAK;}
+"for"                   {return FOR;}
+"endfor"                {return ENDFOR;}
 "while"                 {return WHILE;}
 "endwhile"              {return ENDWHILE;}
 "("                     {return yytext[0];}
