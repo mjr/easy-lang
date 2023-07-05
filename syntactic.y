@@ -213,14 +213,14 @@ loop : FOR '(' exp ';' exp ';' exp ')' cmds ENDFOR {
       freeRecord($5);
       freeRecord($7);
       freeRecord($9);
-      $$ = createRecord(s, "");
+      $$ = createRecord(s, "", "");
       free(s);
     }
     | WHILE exp cmds ENDWHILE {
       char * s = cat("while (", $2->code, ") {\n", $3->code, "}", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
-      $$ = createRecord(s, "");
+      $$ = createRecord(s, "", "");
       free(s);
     };
 
@@ -422,7 +422,7 @@ exp : exp OPPLUS exp {
       char * s = cat($1->code, " != ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "");
+      $$ = createRecord(s, "", "");
       free(s);
     }
     | exp OPGT exp {
@@ -545,7 +545,7 @@ exp : exp OPPLUS exp {
     | LGNOT exp %prec LGNOT {
       char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
       freeRecord($2);
-      $$ = createRecord(s, "");
+      $$ = createRecord(s, "", "");
       free(s);
     }
     // | LGNOT exp {
