@@ -25,14 +25,14 @@ int gotoCounter;
 %token FUNC ENDFUNC
 %token IF ELSE ENDIF
 %token MAIN ENDMAIN
-%token PRINT RETURN
+%token PRINT RETURN READ
 %token ASSIGN OPPLUS OPMINUS OPMULT OPDIV OPEQ OPEXP
 %token HIGHER HIGHER_EQ LESS LESS_EQ DIFF AND NOT 
-%token WHILE ENDWHILE
+%token WHILE ENDWHILE 
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
 %type <rec> subprogs subprog args_op args arg main cmds vardecl cmd interation while 
-%type <rec> cond return print exp call exps_op exps assign_stmt assign
+%type <rec> cond return print exp call exps_op exps assign_stmt assign read
 
 %left OPPLUS OPMINUS
 %left OPMULT OPDIV OPEXP OPEQ HIGHER HIGHER_EQ LESS LESS_EQ DIFF AND NOT 
@@ -181,6 +181,15 @@ cmd : cond {
       $$ = $1;
     };
 
+
+read : READ '(' TYPE ')'{
+        char * s = cat("", "", $3, "", "", "", "", "", "", "");
+        free($3);
+        $$ = createRecord(s, "");
+        free(s);
+      };
+
+
 /* atribuição direta ===== */
 assign_stmt : assign ';' {
         char * s = cat($1->code, ";", "\n", "", "", "", "", "", "", "");
@@ -227,6 +236,12 @@ assign: ID ASSIGN exp {
         char * s = cat($1, "=", "&", $4, "", "", "", "", "", "");
         free($1);
         free($4);
+        $$ = createRecord(s, "");
+        free(s);
+      }
+      | ID ASSIGN read ';' {
+        char * s = cat($1, "=", "scanf", "(", "", "", "", "", "", "");
+        free($1);
         $$ = createRecord(s, "");
         free(s);
       }

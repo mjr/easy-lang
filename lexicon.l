@@ -21,6 +21,7 @@
 "return"                {return RETURN;}
 "while"                 {return WHILE;}
 "endwhile"              {return ENDWHILE;}
+"read"                  {return READ;}
 "("                     {return yytext[0];}
 ")"                     {return yytext[0];}
 "["                     {return yytext[0];}

@@ -69,4 +69,8 @@ main
 
     int varx;
     int address = endereco(c, &i, varx);
+    int leitura;
+
+    //leitura = read(int);
+
 endmain
