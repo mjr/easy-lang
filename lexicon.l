@@ -18,6 +18,7 @@
 "main"                  {return MAIN;}
 "endmain"               {return ENDMAIN;}
 "print"                 {return PRINT;}
+"input"                 {return INPUT;}
 "return"                {return RETURN;}
 "while"                 {return WHILE;}
 "endwhile"              {return ENDWHILE;}
@@ -31,15 +32,26 @@
 "-"                     {return OPMINUS;}
 "*"                     {return OPMULT;}
 "/"                     {return OPDIV;}
+"%"                     {return OPMOD;}
 "=="                    {return OPEQ;}
+"!="                    {return OPNEQ;}
+">"                     {return OPGT;}
+"<"                     {return OPLT;}
+">="                    {return OPGTE;}
+"<="                    {return OPLTE;}
 "**"                    {return OPEXP;}
+"++"                    {return INCR;}
+"--"                    {return DECR;}
+"and"                   {return LGAND;}
+"or"                    {return LGOR;}
+"not"                   {return LGNOT;}
 "bool"                  {yylval.sValue = strdup("bool"); return TYPE;}
 "int"                   {yylval.sValue = strdup("int"); return TYPE;}
 "float"                 {yylval.sValue = strdup("float"); return TYPE;}
 "str"                   {yylval.sValue = strdup("str"); return TYPE;}
 [0-9]+                  {yylval.sValue = strdup(yytext); return INT;}
 [0-9]\.[0-9]+           {yylval.sValue = strdup(yytext); return FLOAT;}
-\"[a-zA-Z0-9 é]*\"      {yylval.sValue = strdup(yytext); return STRING;}
+"\""([^\"\n])*"\""      {yylval.sValue = strdup(yytext); return STRING;}
 "true"                  {yylval.sValue = strdup(yytext); return BOOLEAN;}
 "false"                 {yylval.sValue = strdup(yytext); return BOOLEAN;}
 [a-zA-Z][a-zA-Z0-9]*    {yylval.sValue = strdup(yytext); return ID;}
