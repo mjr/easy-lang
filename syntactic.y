@@ -305,6 +305,12 @@ assign: ID ASSIGN exp {
       };
 
 cond : IF exp cmds ENDIF {
+      printf("result type");
+      printf($2->result_type);
+      if (!(strcmp($2->result_type, "logic") == 0)) {
+        yyerror("Expresão em if só aceita expressão logica");
+        exit(0);
+      }
       char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
@@ -414,7 +420,7 @@ exp : exp OPPLUS exp {
       char * s = cat($1->code, " == ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPNEQ exp {
@@ -422,35 +428,35 @@ exp : exp OPPLUS exp {
       char * s = cat($1->code, " != ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPGT exp {
       char * s = cat($1->code, " > ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPLT exp {
       char * s = cat($1->code, " < ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPGTE exp {
       char * s = cat($1->code, " >= ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPLTE exp {
       char * s = cat($1->code, " <= ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp OPEXP exp {
@@ -524,28 +530,33 @@ exp : exp OPPLUS exp {
       // printf("EXPRESSION\n");
       // printf("%s\n", $2->code);
       char * s = cat("(", $2->code, ")", "", "", "", "", "", "", "");
+      printf($2->result_type);
+      if (strcmp($2->result_type, "logic") == 0) {
+        $$ = createRecord(s, "", "logic");
+      }else{
+        $$ = createRecord(s, "", "");
+      }
       freeRecord($2);
-      $$ = createRecord(s, "", "");
       free(s);
     }
     | exp LGAND exp {
       char * s = cat($1->code, " && ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | exp LGOR exp {
       char * s = cat($1->code, " || ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     | LGNOT exp %prec LGNOT {
       char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
       freeRecord($2);
-      $$ = createRecord(s, "", "");
+      $$ = createRecord(s, "", "logic");
       free(s);
     }
     // | LGNOT exp {
