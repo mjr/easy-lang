@@ -1,5 +1,5 @@
 main
-    int num;
+    int num = 0;
     int count1 = 0;
     int count2 = 0;
     int count3 = 0;
@@ -7,12 +7,17 @@ main
 
     print("Digite os números (encerre com um número negativo):");
 
-    while (1)
-        input("%d", num);
+    while (num >= 0)
+        input(num);
 
         if (num < 0)
-            print("Digite os núm");
-            break;
+            print("Quantidade de números nos intervalos:");
+            print("[0, 25]: %d", count1);
+            print("[26, 50]: %d", count2);
+            print("[51, 75]: %d", count3);
+            print("[76, 100]: %d", count4);
+            print("Numero negativo digitado. O programa será encerrado.");
+            return 0;
         endif
 
         if (num >= 0 and num <= 25)

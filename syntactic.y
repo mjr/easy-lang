@@ -217,11 +217,18 @@ loop : FOR '(' exp ';' exp ';' exp ')' cmds ENDFOR {
       free(s);
     }
     | WHILE exp cmds ENDWHILE {
-      char * s = cat("while (", $2->code, ") {\n", $3->code, "}", "", "", "", "", "");
+      //int identifier = top();
+      
+      char * ss = cat( "loop_while_", "identifier", ":\n", "", "\tif(!(" , $2->code, "))", " goto", " end_loop_while; \n", $3->code);
+      char * sss = cat("goto ", "loop_while_identifier;", "\n", "end_loop_while: ", "", "", "", "", "", "");
+
+      char * s = cat(ss, sss, "", "", "", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
       $$ = createRecord(s, "", "");
       free(s);
+      free(ss);
+      free(sss);
     };
 
 /* atribuição direta ===== */
@@ -305,17 +312,22 @@ assign: ID ASSIGN exp {
       };
 
 cond : IF exp cmds ENDIF {
-      printf("result type");
-      printf($2->result_type);
+      //printf("result type");
+      //printf($2->result_type);
       if (!(strcmp($2->result_type, "logic") == 0)) {
         yyerror("Expresão em if só aceita expressão logica");
         exit(0);
       }
-      char * s = cat("if ", $2->code, " {\n", $3->code, "}", "", "", "", "", "");
+      char * s = cat("if ", $2->code, " {\n", $3->code, "}\n", "", "", "", "", "");
+      //char * ss = cat("if_label: \n ", $3->code, "", "", "", "", "", "", "", "");
+      //char * sss = cat(s, ss, "", "", "", "", "", "", "", "");
+
       freeRecord($2);
       freeRecord($3);
       $$ = createRecord(s, "", "");
       free(s);
+      //free(ss);
+      //free(sss);
     }
     | IF exp cmds ELSE cond {
       char * s = cat("if ", $2->code, " {\n", $3->code, "} else ", $5->code, "", "", "", "");
@@ -359,7 +371,7 @@ print : PRINT '(' exps ')' ';' {
           format = "%f";
           s = cat("printf(\"", format, "\\n\", ", $3->code, ");", "", "", "", "", "");
         } else {
-          s = cat("puts", "(", $3->code, ")", ";", "", "", "", "", "");
+          s = cat("printf", "(", $3->code, ")", ";", "", "", "", "", "");
         }
 
         freeRecord($3);
@@ -367,18 +379,18 @@ print : PRINT '(' exps ')' ';' {
         free(s);
       };
 
-input : INPUT '(' exps ')' ';' {
-        char *format;
-        if (strcmp($3->opt1, "int") == 0) {
-          format = "%d";
-        } else if (strcmp($3->opt1, "float") == 0) {
-          format = "%f";
-        } else {
-          format = "%c";
-        }
-
-        char * s = cat("scanf(\"", format, "\\n\", &", $3->code, ");", "", "", "", "", "");
-        freeRecord($3);
+input : INPUT '(' ID ')' ';' {
+        //char *format;
+        //if (strcmp($3->opt1, "int") == 0) {
+        //  format = "%d";
+        //} else if (strcmp($3->opt1, "float") == 0) {
+        //  format = "%f";
+        //} else {
+        //  format = "%c";
+        //}
+        
+        char * s = cat("scanf(\"", "%d", "", ",\", &", $3, ");", "", "", "", "");
+        //freeRecord($3);
         $$ = createRecord(s, "", "");
         free(s);
       };
@@ -530,7 +542,7 @@ exp : exp OPPLUS exp {
       // printf("EXPRESSION\n");
       // printf("%s\n", $2->code);
       char * s = cat("(", $2->code, ")", "", "", "", "", "", "", "");
-      printf($2->result_type);
+      //printf($2->result_type);
       if (strcmp($2->result_type, "logic") == 0) {
         $$ = createRecord(s, "", "logic");
       }else{
