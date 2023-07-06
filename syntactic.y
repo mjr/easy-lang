@@ -34,7 +34,7 @@ int scope_count;
 %token <sValue> ID TYPE INT FLOAT STRING BOOLEAN
 
 %type <rec> subprogs subprog args_op args arg main cmds vardecl cmd
-%type <rec> cond loop return break print input exp call exps_op exps assign_stmt assign increment_stmt decrement_stmt
+%type <rec> cond loop return break print input exp call exps_op exps assign_stmt assign increment_stmt decrement_stmt fordecl forstop forinter
 
 %left OPPLUS OPMINUS
 %left OPMULT OPDIV OPMOD OPEQ OPNEQ OPGT OPLT OPGTE OPLTE OPEXP
@@ -93,6 +93,7 @@ args : arg {
     };
 
 arg : TYPE ID {
+      insertSymbol(symbolTable, $2, $1, scope_count);
       char * s = cat($1, " ", $2, "", "", "", "", "", "", "");
       free($1);
       free($2);
@@ -207,7 +208,39 @@ cmd : cond {
     };
 
 
-loop : FOR '(' exp ';' exp ';' exp ')' cmds ENDFOR {
+fordecl : TYPE ID ASSIGN exp {
+  char *type = lookupSymbolType(symbolTable, $2);
+  if (type != NULL) {
+    yyerror("variavel com mesmo nome já declarada");
+    exit(0);
+  }
+  insertSymbol(symbolTable, $2, $1, scope_count);
+  char *s = cat($1, " ", $2, " = ", $4->code, ";", "", "", "", "");
+  free($1);
+  free($2);
+  freeRecord($4);
+  $$ = createRecord(s, "", "");
+  free(s);
+}
+
+forstop : exp {
+  $$ = $1;
+}
+
+forinter : ID INCR {
+          char *s = cat($1, "++;", "", "", "", "", "", "", "", "");
+          free($1);
+          $$ = createRecord(s, "", "");
+          free(s);
+        }
+        | INCR ID {
+          char *s = cat("++", $2, ";", "", "", "", "", "", "", "");
+          free($2);
+          $$ = createRecord(s, "", "");
+          free(s);
+        };
+
+loop : FOR '(' fordecl ';' forstop ';' forinter ')' cmds ENDFOR {
       char * s = cat("for (", $3->code, "; ", $5->code, "; ", $7->code, ") {\n", $9->code, "}", "");
       freeRecord($3);
       freeRecord($5);
