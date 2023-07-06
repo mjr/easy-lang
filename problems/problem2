@@ -5,35 +5,36 @@ int count1 = 0;
 int count2 = 0;
 int count3 = 0;
 int count4 = 0;
-printf("Digite os números (encerre com um número negativo):");
+printf("Digite os números (encerre com um número negativo):\n");
 loop_while_identifier:
 	if(!((num >= 0))) goto end_loop_while; 
 scanf("%d,", &num);
 if (num < 0) {
-printf("Quantidade de números nos intervalos:");
-printf("[0, 25]: %d", count1);
-printf("[26, 50]: %d", count2);
-printf("[51, 75]: %d", count3);
-printf("[76, 100]: %d", count4);
+printf("Quantidade de números nos intervalos:\n");
+printf("[0, 25]: %d\n", count1);
+printf("[26, 50]: %d\n", count2);
+printf("[51, 75]: %d\n", count3);
+printf("[76, 100]: %d\n", count4);
 printf("Numero negativo digitado. O programa será encerrado.");
 return 0;
 }
 
+if (num >= 76 && num <= 100) {
+count4++;
+}
+
+if (num >= 51 && num <= 75) {
+count3++;
+}
+
+if (num >= 26 && num <= 50) {
+count2++;
+}
+
 if (num >= 0 && num <= 25) {
 count1++;
-} else if (num >= 26 && num <= 50) {
-count2++;
-} else if (num >= 51 && num <= 75) {
-count3++;
-} else if (num >= 76 && num <= 100) {
-count4++;
 }
 
 goto loop_while_identifier;
 end_loop_while: 
-printf("Quantidade de números nos intervalos:");
-printf("[0, 25]: %d", count1);
-printf("[26, 50]: %d", count2);
-printf("[51, 75]: %d", count3);
-printf("[76, 100]: %d", count4);
 }

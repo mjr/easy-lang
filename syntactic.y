@@ -362,23 +362,34 @@ cond : IF exp cmds ENDIF {
       //free(ss);
       //free(sss);
     }
-    | IF exp cmds ELSE cond {
-      char * s = cat("if ", $2->code, " {\n", $3->code, "} else ", $5->code, "", "", "", "");
+    | IF exp cmds ELSE cmd ENDIF {
+      // printf("IF ELSE\n");
+      // printf("exp: %s\n", $2->code);
+      // printf("cmds: %s\n", $3->code);
+      // printf("cmd: %s\n", $5->code);
+      // char * s = cat("if ", $2->code, " {\n", $3->code, "} else ", $5->code, "", "", "", "");
+      // freeRecord($2);
+      // freeRecord($3);
+      // freeRecord($5);
+      // $$ = createRecord(s, "", "");
+      // free(s);
+
+      char gotoRef[5] = "";
+      sprintf(gotoRef, "%d", gotoCounter);
+      gotoCounter++;
+      char * s1 = cat("if (!", $2->code, ") {\n", "goto else", gotoRef, ";}", $3->code, "", "", "");
+      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $5->code, "", "", "", "");
+      char * s = cat(s1, s2, "", "", "", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
       freeRecord($5);
       $$ = createRecord(s, "", "");
+      free(s1);
+      free(s2);
       free(s);
     };
-    // | IF exp cmds ELSE IF exp cmds cond {
-    //   char * s = cat("if ", $2->code, " {\n", $3->code, "} else if ", $6->code, " {\n", $7->code, "}", $8->code);
-    //   freeRecord($2);
-    //   freeRecord($3);
-    //   freeRecord($6);
-    //   freeRecord($7);
-    //   freeRecord($8);
-    //   $$ = createRecord(s, "");
-    //   free(s);
+    // | IF exp cmds ELSE cond {
+      
     // };
 
 return : RETURN exp ';' {
