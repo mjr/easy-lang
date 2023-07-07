@@ -1,0 +1,82 @@
+#define MAXSIZE 100
+void readMatrix(int matrix[MAXSIZE][MAXSIZE], int rows, int cols)
+{
+printf("Digite os elementos da matriz:\n");
+for (int i = 0; i < rows; i++) {
+for (int j = 0; j < cols; j++) {
+printf("Elemento [%d][%d]: ", i, j);
+scanf("%d", &matrix[i][j]);
+}
+}
+}
+void printMatrix(int matrix[MAXSIZE][MAXSIZE], int rows, int cols)
+{
+printf("Matriz:\n");
+for (int w = 0; w < rows; w++) {
+for (int z = 0; z < cols; z++) {
+printf("%d ", matrix[w][z]);
+}
+printf("\n");
+}
+}
+void sumMatrices(int matrix1[MAXSIZE][MAXSIZE], int matrix2[MAXSIZE][MAXSIZE], int rows, int cols)
+{
+int sumMatrix[MAXSIZE][MAXSIZE];
+for (int k = 0; k < rows; k++) {
+for (int l = 0; l < cols; l++) {
+sumMatrix[k][l] = matrix1[k][l] + matrix2[k][l];
+
+}
+}
+printf("\nSoma das matrizes:\n");
+printMatrix(sumMatrix, rows, cols);
+}
+void multiplyMatrices(int matrix1[MAXSIZE][MAXSIZE], int rows1, int cols1, int matrix2[MAXSIZE][MAXSIZE], int rows2, int cols2)
+{
+if (cols1 != rows2) {
+printf("\nImpossível multiplicar as matrizes. O número de colunas da primeira matriz deve ser igual ao número de linhas da segunda matriz.\n");
+return;
+}
+
+int productMatrix[MAXSIZE][MAXSIZE];
+for (int m = 0; m < rows1; m++) {
+for (int n = 0; n < cols2; n++) {
+productMatrix[m][n] = 0;
+
+for (int o = 0; o < cols1; o++) {
+productMatrix[m][n] += matrix1[m][o] * matrix2[o][n];
+
+}
+}
+}
+printf("\nProduto das matrizes:\n");
+printMatrix(productMatrix, rows1, cols2);
+}
+
+int main() {
+int rows1;
+int cols1;
+int rows2;
+int cols2;
+int matrix1[MAXSIZE][MAXSIZE];
+int matrix2[MAXSIZE][MAXSIZE];
+printf("Informe o número de linhas e colunas da primeira matriz:\n");
+scanf("%d", &rows1);
+scanf("%d", &cols1);
+printf("Informe o número de linhas e colunas da segunda matriz:\n");
+scanf("%d", &rows2);
+scanf("%d", &cols2);
+if (rows1 != rows2 || cols1 != cols2) {
+printf("\nAs matrizes não têm as mesmas dimensões. Impossível realizar a soma e o produto.\n");
+return;
+}
+
+readMatrix(matrix1, rows1, cols1);
+readMatrix(matrix2, rows2, cols2);
+printf("\nMatriz 1:\n");
+printMatrix(matrix1, rows1, cols1);
+printf("\nMatriz 2:\n");
+printMatrix(matrix2, rows2, cols2);
+sumMatrices(matrix1, matrix2, rows1, cols1);
+multiplyMatrices(matrix1, rows1, cols1, matrix2, rows2, cols2);
+}

@@ -10,6 +10,7 @@
 "//"(.)*
 [ \t]                   ;
 \n                      {yylineno++;}
+"const"                 {return CONST;}
 "func"                  {return FUNC;}
 "endfunc"               {return ENDFUNC;}
 "if"                    {return IF;}
@@ -47,6 +48,7 @@
 "**"                    {return OPEXP;}
 "++"                    {return INCR;}
 "--"                    {return DECR;}
+"+="                    {return OPPLUSASSIGN;}
 "and"                   {return LGAND;}
 "or"                    {return LGOR;}
 "not"                   {return LGNOT;}
