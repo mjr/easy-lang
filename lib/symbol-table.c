@@ -112,3 +112,19 @@ void display(SymbolTable* createSymbolTable) {
         }
     }
 }
+
+void removeScope(SymbolTable* table, int receivedScope) {
+
+        for (int i = 0; i < 100; ++i) {
+                if (table->entries[i] != NULL && table->entries[i]->scope == receivedScope) {
+                //      table->entries[i] == NULL;
+                //printf("#### symbol #%s ####\n", createSymbolTable->entries[i]->identifier);
+                //printf("#### Scope #%d ####\n", createSymbolTable->entries[i]->scope);
+                //SymbolTableEntry *entry = table->entries[i];
+                free(table->entries[i]->identifier);
+                free(table->entries[i]->type);
+                table->entries[i] = NULL;
+                }
+        }
+}
+

@@ -18,6 +18,9 @@ SymbolTable *symbolTable;
 int gotoCounter;
 int scope_count;
 int labelCounter;
+
+void scopeIncrement ();
+void scopeDecrement ();
 %}
 
 %union {
@@ -77,17 +80,17 @@ subprogs : {
           free(s);
         };
 
-subprog : FUNC TYPE ID '(' args_op ')' cmds ENDFUNC {
-          scope_count++;
-          char * s1 = cat($2, " ", $3, "(", $5->code, "", "", "", "", "");
-          char * s2 = cat(s1, ")\n", "{\n", $7->code, "}", "", "", "", "", "");
+subprog : FUNC TYPE ID {scopeIncrement();}'(' args_op ')' cmds ENDFUNC {
+          char * s1 = cat($2, " ", $3, "(", $6->code, "", "", "", "", "");
+          char * s2 = cat(s1, ")\n", "{\n", $8->code, "}", "", "", "", "", "");
           free(s1);
           free($2);
           free($3);
-          freeRecord($5);
-          freeRecord($7);
+          freeRecord($6);
+          freeRecord($8);
           $$ = createRecord(s2, "", "");
           free(s2);
+	  scopeDecrement();
         }
         | FUNC ID '(' args_op ')' cmds ENDFUNC {
           scope_count++;
@@ -438,25 +441,26 @@ assign: ID ASSIGN exp {
         free(s);
       };
 
-cond : IF exp cmds ENDIF {
+cond : IF {scopeIncrement();}exp cmds ENDIF {
       //printf("result type");
       //printf($2->result_type);
-      if (!(strcmp($2->result_type, "logic") == 0)) {
+      if (!(strcmp($3->result_type, "logic") == 0)) {
         yyerror("Expresão em if só aceita expressão logica");
         exit(0);
       }
-      char * s = cat("if ", $2->code, " {\n", $3->code, "}\n", "", "", "", "", "");
-      //char * ss = cat("if_label: \n ", $3->code, "", "", "", "", "", "", "", "");
+      char * s = cat("if ", $3->code, " {\n", $4->code, "}\n", "", "", "", "", "");
+      //char * ss = cat("if_label: \n ", $4->code, "", "", "", "", "", "", "", "");
       //char * sss = cat(s, ss, "", "", "", "", "", "", "", "");
 
-      freeRecord($2);
       freeRecord($3);
+      freeRecord($4);
       $$ = createRecord(s, "", "");
       free(s);
+      scopeDecrement();
       //free(ss);
       //free(sss);
     }
-    | IF exp cmds ELSE cmd ENDIF {
+    | IF {scopeIncrement();}exp cmds ELSE cmd ENDIF {
       // printf("IF ELSE\n");
       // printf("exp: %s\n", $2->code);
       // printf("cmds: %s\n", $3->code);
@@ -471,16 +475,17 @@ cond : IF exp cmds ENDIF {
       char gotoRef[5] = "";
       sprintf(gotoRef, "%d", gotoCounter);
       gotoCounter++;
-      char * s1 = cat("if (!", $2->code, ") {\n", "goto else", gotoRef, ";}", $3->code, "", "", "");
-      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $5->code, "", "", "", "");
+      char * s1 = cat("if (!", $3->code, ") {\n", "goto else", gotoRef, ";}", $4->code, "", "", "");
+      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $6->code, "", "", "", "");
       char * s = cat(s1, s2, "", "", "", "", "", "", "", "");
-      freeRecord($2);
       freeRecord($3);
-      freeRecord($5);
+      freeRecord($4);
+      freeRecord($6);
       $$ = createRecord(s, "", "");
       free(s1);
       free(s2);
       free(s);
+      scopeDecrement();
     };
     // | IF exp cmds ELSE cond {
       
@@ -847,7 +852,7 @@ int main(int argc, char **argv) {
   fclose(yyin);
   fclose(yyout);
 
-  //display(symbolTable);
+  display(symbolTable);
 
   destroySymbolTable(symbolTable);
 
@@ -881,4 +886,15 @@ char* generateLabel() {
   sprintf(label, "label%d", labelCounter);
   labelCounter++;
   return label;
+}
+
+void scopeIncrement (){
+        scope_count++;
+//      printf("===============SCOPE=%d============\n",scope);
+//        printf("===========SCOPE=COUNT=%d============\n",scope_count);
+}
+
+void scopeDecrement (){
+        removeScope(symbolTable, scope_count);
+        scope_count--;
 }

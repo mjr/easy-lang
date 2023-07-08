@@ -19,5 +19,6 @@ char* lookupSymbolType(SymbolTable *table, const char *identifier);
 char* lookupInScopeSymbolType(SymbolTable *table, const char *identifier, const int scope);
 
 void display(SymbolTable* createSymbolTable);
+void removeScope(SymbolTable* table, int receivedScope);
 
 #endif

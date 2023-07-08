@@ -1,4 +1,5 @@
 
+
 int main() {
 int num = 0;
 int count1 = 0;
@@ -8,7 +9,7 @@ int count4 = 0;
 printf("Digite os números (encerre com um número negativo):\n");
 loop_while_identifier:
 	if(!((num >= 0))) goto end_loop_while; 
-scanf("%d,", &num);
+scanf("%d", &num);
 if (num < 0) {
 printf("Quantidade de números nos intervalos:\n");
 printf("[0, 25]: %d\n", count1);
