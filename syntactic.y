@@ -235,8 +235,9 @@ vardecl : TYPE ID ASSIGN exp ';' {
             free(s);
         };
 
-cmd : cond {
+cmd : cond{scopeIncrement();} {
       $$ = $1;
+      scopeDecrement();
     }
     | loop {
       $$ = $1;
@@ -441,26 +442,25 @@ assign: ID ASSIGN exp {
         free(s);
       };
 
-cond : IF {scopeIncrement();}exp cmds ENDIF {
+cond : IF exp cmds ENDIF {
       //printf("result type");
       //printf($2->result_type);
-      if (!(strcmp($3->result_type, "logic") == 0)) {
+      if (!(strcmp($2->result_type, "logic") == 0)) {
         yyerror("Expresão em if só aceita expressão logica");
         exit(0);
       }
-      char * s = cat("if ", $3->code, " {\n", $4->code, "}\n", "", "", "", "", "");
+      char * s = cat("if ", $2->code, " {\n", $3->code, "}\n", "", "", "", "", "");
       //char * ss = cat("if_label: \n ", $4->code, "", "", "", "", "", "", "", "");
       //char * sss = cat(s, ss, "", "", "", "", "", "", "", "");
 
+      freeRecord($2);
       freeRecord($3);
-      freeRecord($4);
       $$ = createRecord(s, "", "");
       free(s);
-      scopeDecrement();
       //free(ss);
       //free(sss);
     }
-    | IF {scopeIncrement();}exp cmds ELSE cmd ENDIF {
+    | IF exp cmds ELSE cmd ENDIF {
       // printf("IF ELSE\n");
       // printf("exp: %s\n", $2->code);
       // printf("cmds: %s\n", $3->code);
@@ -475,17 +475,17 @@ cond : IF {scopeIncrement();}exp cmds ENDIF {
       char gotoRef[5] = "";
       sprintf(gotoRef, "%d", gotoCounter);
       gotoCounter++;
-      char * s1 = cat("if (!", $3->code, ") {\n", "goto else", gotoRef, ";}", $4->code, "", "", "");
-      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $6->code, "", "", "", "");
+      char * s1 = cat("if (!", $2->code, ") {\n", "goto else", gotoRef, ";}", $3->code, "", "", "");
+      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $5->code, "", "", "", "");
       char * s = cat(s1, s2, "", "", "", "", "", "", "", "");
+      freeRecord($2);
       freeRecord($3);
-      freeRecord($4);
-      freeRecord($6);
+      freeRecord($5);
       $$ = createRecord(s, "", "");
       free(s1);
       free(s2);
       free(s);
-      scopeDecrement();
+//      scopeDecrement();
     };
     // | IF exp cmds ELSE cond {
       
