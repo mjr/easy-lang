@@ -130,8 +130,15 @@ arg : TYPE ID {
       $$ = createRecord(s, "", "");
       free(s);
     }
-    | TYPE '&' ID {
+    | TYPE OPMULT ID {
       char * s = cat($1, " *", $3, "", "", "", "", "", "", "");
+      free($1);
+      free($3);
+      $$ = createRecord(s, "", "");
+      free(s);
+    }
+    | TYPE '&' ID {
+      char * s = cat($1, " &", $3, "", "", "", "", "", "", "");
       free($1);
       free($3);
       $$ = createRecord(s, "", "");
@@ -405,6 +412,20 @@ assign: ID ASSIGN exp {
                   freeRecord($9);
                   $$ = createRecord(s, "", "");
                   free(s);
+      }
+      | OPMULT ID ASSIGN exp {
+        char * s = cat("*", $2, "=", $4->code, "", "", "", "", "", "");
+        free($2);
+        freeRecord($4);
+        $$ = createRecord(s, "", "");
+        free(s);
+      }
+      | ID ASSIGN OPMULT ID {
+        char * s = cat($1, "=", "*", $4, "", "", "", "", "", "");
+        free($1);
+        free($4);
+        $$ = createRecord(s, "", "");
+        free(s);
       }
       | '&' ID ASSIGN exp {
         char * s = cat("&", $2, "=", $4->code, "", "", "", "", "", "");
@@ -812,6 +833,19 @@ exps : exp {
       char * s = cat($1->code, ", ", $3->code, "", "", "", "", "", "", "");
       freeRecord($1);
       freeRecord($3);
+      $$ = createRecord(s, "", "");
+      free(s);
+    }
+    | OPMULT ID {
+      char * s = cat("*", $2, "", "", "", "", "", "", "", "");
+      free($2);
+      $$ = createRecord(s, "", "");
+      free(s);
+    }
+    | OPMULT ID ',' exps {
+      char * s = cat("*", $2, ", ", $4->code, "", "", "", "", "", "");
+      free($2);
+      freeRecord($4);
       $$ = createRecord(s, "", "");
       free(s);
     }

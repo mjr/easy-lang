@@ -33,6 +33,7 @@
 ","                     {return yytext[0];}
 ":"                     {return yytext[0];}
 ";"                     {return yytext[0];}
+"&"                     {return yytext[0];}
 "="                     {return ASSIGN;}
 "+"                     {return OPPLUS;}
 "-"                     {return OPMINUS;}
