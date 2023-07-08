@@ -2,32 +2,68 @@
 void readMatrix(int matrix[MAXSIZE][MAXSIZE], int rows, int cols)
 {
 printf("Digite os elementos da matriz:\n");
-for (int i = 0; i < rows; i++) {
-for (int j = 0; j < cols; j++) {
+label2:
+int i = 0;
+label2_cond:
+if (!(i < rows)) goto label3;
+label0:
+int j = 0;
+label0_cond:
+if (!(j < cols)) goto label1;
 printf("Elemento [%d][%d]: ", i, j);
 scanf("%d", &matrix[i][j]);
-}
-}
+
+j++; goto label0_cond;
+label1:
+
+
+i++; goto label2_cond;
+label3:
+
 }
 void printMatrix(int matrix[MAXSIZE][MAXSIZE], int rows, int cols)
 {
 printf("Matriz:\n");
-for (int w = 0; w < rows; w++) {
-for (int z = 0; z < cols; z++) {
+label6:
+int w = 0;
+label6_cond:
+if (!(w < rows)) goto label7;
+label4:
+int z = 0;
+label4_cond:
+if (!(z < cols)) goto label5;
 printf("%d ", matrix[w][z]);
-}
+
+z++; goto label4_cond;
+label5:
+
 printf("\n");
-}
+
+w++; goto label6_cond;
+label7:
+
 }
 void sumMatrices(int matrix1[MAXSIZE][MAXSIZE], int matrix2[MAXSIZE][MAXSIZE], int rows, int cols)
 {
 int sumMatrix[MAXSIZE][MAXSIZE];
-for (int k = 0; k < rows; k++) {
-for (int l = 0; l < cols; l++) {
+label10:
+int k = 0;
+label10_cond:
+if (!(k < rows)) goto label11;
+label8:
+int l = 0;
+label8_cond:
+if (!(l < cols)) goto label9;
 sumMatrix[k][l] = matrix1[k][l] + matrix2[k][l];
 
-}
-}
+
+l++; goto label8_cond;
+label9:
+
+
+k++; goto label10_cond;
+label11:
+
 printf("\nSoma das matrizes:\n");
 printMatrix(sumMatrix, rows, cols);
 }
@@ -39,16 +75,34 @@ return;
 }
 
 int productMatrix[MAXSIZE][MAXSIZE];
-for (int m = 0; m < rows1; m++) {
-for (int n = 0; n < cols2; n++) {
+label16:
+int m = 0;
+label16_cond:
+if (!(m < rows1)) goto label17;
+label14:
+int n = 0;
+label14_cond:
+if (!(n < cols2)) goto label15;
 productMatrix[m][n] = 0;
 
-for (int o = 0; o < cols1; o++) {
+label12:
+int o = 0;
+label12_cond:
+if (!(o < cols1)) goto label13;
 productMatrix[m][n] += matrix1[m][o] * matrix2[o][n];
 
-}
-}
-}
+
+o++; goto label12_cond;
+label13:
+
+
+n++; goto label14_cond;
+label15:
+
+
+m++; goto label16_cond;
+label17:
+
 printf("\nProduto das matrizes:\n");
 printMatrix(productMatrix, rows1, cols2);
 }

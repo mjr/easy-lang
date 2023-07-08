@@ -12,10 +12,12 @@ extern char *yytext;
 extern FILE *yyin, *yyout;
 
 char *cat(char *, char *, char *, char *, char *, char *, char *, char *, char *, char *);
+char* generateLabel();
 
 SymbolTable *symbolTable;
 int gotoCounter;
 int scope_count;
+int labelCounter;
 %}
 
 %union {
@@ -298,13 +300,27 @@ forinter : ID INCR {
         };
 
 loop : FOR '(' fordecl ';' forstop ';' forinter ')' cmds ENDFOR {
-      char * s = cat("for (", $3->code, "; ", $5->code, "; ", $7->code, ") {\n", $9->code, "}", "");
+      char *loopLabel = generateLabel();
+      char *endLabel = generateLabel();
+
+      char *s1 = cat(loopLabel, ":\n", "", "", "", "", "", "", "", "");
+      char *s2 = cat($3->code, ";\n", "", "", "", "", "", "", "", "");
+      char *s3 = cat(loopLabel, "_cond:\n", "", "", "", "", "", "", "", "");
+      char *s4 = cat("if (!(", $5->code, ")) goto ", endLabel, ";\n", "", "", "", "", "");
+      char *s5 = cat($9->code, "\n", "", "", "", "", "", "", "", "");
+      char *s6 = cat($7->code, "; goto ", loopLabel, "_cond;\n", "", "", "", "", "", "");
+      char *s7 = cat(endLabel, ":\n", "", "", "", "", "", "", "", "");
+
+      char *s = cat(s1, s2, s3, s4, s5, s6, s7, "", "", "");
+
+      free(loopLabel);
+      free(endLabel);
       freeRecord($3);
       freeRecord($5);
       freeRecord($7);
       freeRecord($9);
+
       $$ = createRecord(s, "", "");
-      free(s);
     }
     | WHILE exp cmds ENDWHILE {
       //int identifier = top();
@@ -824,6 +840,7 @@ int main(int argc, char **argv) {
   symbolTable = createSymbolTable(100);
   gotoCounter = 0;
   scope_count = 0;
+  labelCounter = 0;
 
   code = yyparse();
 
@@ -857,4 +874,11 @@ char *cat(char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7, 
   sprintf(output, "%s%s%s%s%s%s%s%s%s%s", s1, s2, s3, s4, s5, s6, s7, s8, s9, s10);
 
   return output;
+}
+
+char* generateLabel() {
+  char* label = (char*)malloc(15 * sizeof(char));
+  sprintf(label, "label%d", labelCounter);
+  labelCounter++;
+  return label;
 }

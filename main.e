@@ -1,11 +1,17 @@
-const int MAXSIZE = 100;
+// const int MAXSIZE = 100;
 main
-    print("Hello World");
-    int c = 1;
-    int i = c;
-    int matriz[MAXSIZE][MAXSIZE];
-    matriz[2][3] = 5;
-    matriz[i + 1][c + 1] = 4;
+    // print("Hello World");
+    // int c = 1;
+    // int i = c;
+    // int matriz[MAXSIZE][MAXSIZE];
+    // matriz[2][3] = 5;
+    // matriz[i + 1][c + 1] = 4;
+    for (int w = 0; w < 4; w++)
+        for (int z = 0; z < 4; z++)
+            print("[%d] [%d]", w, z);
+        endfor
+        print("\n");
+    endfor
 endmain
 
 // func bool f(bool a, bool b, bool c)
