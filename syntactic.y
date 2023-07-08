@@ -131,6 +131,7 @@ arg : TYPE ID {
       free(s);
     }
     | TYPE OPMULT ID {
+      insertSymbol(symbolTable, $3, $1, scope_count);
       char * s = cat($1, " *", $3, "", "", "", "", "", "", "");
       free($1);
       free($3);
@@ -138,6 +139,7 @@ arg : TYPE ID {
       free(s);
     }
     | TYPE '&' ID {
+      insertSymbol(symbolTable, $3, $1, scope_count);
       char * s = cat($1, " &", $3, "", "", "", "", "", "", "");
       free($1);
       free($3);
@@ -209,6 +211,14 @@ vardecl : TYPE ID ASSIGN exp ';' {
           char *s = cat($1, " ", $2, ";", "", "", "", "", "", "");
           free($1);
           free($2);
+          $$ = createRecord(s, "", "");
+          free(s);
+        }
+        | TYPE OPMULT ID ';' {
+          insertSymbol(symbolTable, $3, $1, scope_count);
+          char *s = cat($1, " *", $3, ";", "", "", "", "", "", "");
+          free($1);
+          free($3);
           $$ = createRecord(s, "", "");
           free(s);
         }
@@ -420,13 +430,13 @@ assign: ID ASSIGN exp {
         $$ = createRecord(s, "", "");
         free(s);
       }
-      | ID ASSIGN OPMULT ID {
+      /* | ID ASSIGN OPMULT ID {
         char * s = cat($1, "=", "*", $4, "", "", "", "", "", "");
         free($1);
         free($4);
         $$ = createRecord(s, "", "");
         free(s);
-      }
+      } */
       | '&' ID ASSIGN exp {
         char * s = cat("&", $2, "=", $4->code, "", "", "", "", "", "");
         free($2);
@@ -604,6 +614,14 @@ exp : exp OPPLUS exp {
       $$ = createRecord(s, "", "");
       free(s);
     }
+    | exp OPMOD exp {
+      checkType($1->opt1, $3->opt1);
+      char * s = cat($1->code, " % ", $3->code, "", "", "", "", "", "", "");
+      freeRecord($1);
+      freeRecord($3);
+      $$ = createRecord(s, "", "");
+      free(s);
+    }
     | exp OPEQ exp {
       checkType($1->opt1, $3->opt1);
       char * s = cat($1->code, " == ", $3->code, "", "", "", "", "", "", "");
@@ -665,6 +683,20 @@ exp : exp OPPLUS exp {
         $$ = createRecord($1, type, "");
       }
       free($1);
+    }
+    | OPMULT ID {
+      // char *type = lookupSymbolType(symbolTable, $2);
+      //   if (type == NULL) {
+      //     yyerror("variavel não declarada");  //VER COMO DEIXAR ESSA PARTE DO CODIGO PARA VERIFICAR SE A VARIAVEL FOI DECLARADA
+      //     exit(0);
+      //   } else {
+      //   $$ = createRecord($2, type, "");
+      // }
+      // free($2);
+      char * s = cat("*", $2, "", "", "", "", "", "", "", "");
+      free($2);
+      $$ = createRecord(s, "", "");
+      free(s);
     }
     | INT {
       // printf("INT\n");
@@ -836,19 +868,19 @@ exps : exp {
       $$ = createRecord(s, "", "");
       free(s);
     }
-    | OPMULT ID {
+    /* | OPMULT ID {
       char * s = cat("*", $2, "", "", "", "", "", "", "", "");
       free($2);
       $$ = createRecord(s, "", "");
       free(s);
-    }
-    | OPMULT ID ',' exps {
+    } */
+    /* | OPMULT ID ',' exps {
       char * s = cat("*", $2, ", ", $4->code, "", "", "", "", "", "");
       free($2);
       freeRecord($4);
       $$ = createRecord(s, "", "");
       free(s);
-    }
+    } */
     | '&' ID {
       char * s = cat("&", $2, "", "", "", "", "", "", "", "");
       free($2);
