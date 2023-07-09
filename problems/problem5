@@ -1,0 +1,43 @@
+
+void mdc(int n, int m, int *r)
+{
+if (n == 0) {
+*r=m;
+
+}
+
+if (m == 0) {
+*r=n;
+
+}
+
+if (n == m) {
+*r=n;
+
+}
+
+if (!(m > n)) {
+goto else2;}if (!(n != 0)) {
+goto else0;}mdc(n, m % n, r);
+
+else0:return 0;
+
+else2:if (m < n) {
+if (!(m != 0)) {
+goto else1;}mdc(n % m, m, r);
+
+else1:return 0;
+}
+
+}
+
+int main() {
+int n;
+int m;
+int r;
+printf("Digite dois números naturais estritamente positivos: ");
+scanf("%d", &n);
+scanf("%d", &m);
+mdc(n, m, &r);
+printf("O maior divisor comum entre %d e %d é: %d\n", n, m, r);
+}

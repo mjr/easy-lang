@@ -507,7 +507,7 @@ cond : IF exp cmds ENDIF {
       sprintf(gotoRef, "%d", gotoCounter);
       gotoCounter++;
       char * s1 = cat("if (!", $2->code, ") {\n", "goto else", gotoRef, ";}", $3->code, "", "", "");
-      char * s2 = cat(s1, "\n", "else", gotoRef, ":", $5->code, "", "", "", "");
+      char * s2 = cat("", "\n", "else", gotoRef, ":", $5->code, "", "", "", "");
       char * s = cat(s1, s2, "", "", "", "", "", "", "", "");
       freeRecord($2);
       freeRecord($3);
