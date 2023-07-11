@@ -1,26 +1,26 @@
-func mdc(int n, int m, int *r)
+func int mdc(int n, int m, int *r)
     if (n == 0)
-        *r = m;
+        return m;
     endif
 
     if (m == 0)
-        *r = n;
+        return n;
     endif
 
     if (n == m)
-        *r = n;
+        return n;
     endif
 
     if (m > n)
         if (n != 0)
-            mdc(n, m % n, r);
+            return mdc(n, m % n, r);
         else
             return 0;
         endif
     else
         if (m < n)
             if (m != 0)
-                mdc(n % m, m, r);
+                return mdc(n % m, m, r);
             else
                 return 0;
             endif
@@ -37,8 +37,8 @@ main
     input(n);
     input(m);
 
-    mdc(n, m, &r);
+    r = mdc(n, m, &r);
 
-    printf("O maior divisor comum entre %d e %d é: %d\n", n, m, r);
+    print("O maior divisor comum entre %d e %d é: %d\n", n, m, r);
 
 endmain
