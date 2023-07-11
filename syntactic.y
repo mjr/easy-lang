@@ -344,10 +344,12 @@ loop : FOR '(' fordecl ';' forstop ';' forinter ')' cmds ENDFOR {
       $$ = createRecord(s, "", "");
     }
     | WHILE exp cmds ENDWHILE {
-      //int identifier = top();
+
+      char *wLabel = generateLabel();
+      char *endLabel = generateLabel();
       
-      char * ss = cat( "loop_while_", "identifier", ":\n", "", "\tif(!(" , $2->code, "))", " goto", " end_loop_while; \n", $3->code);
-      char * sss = cat("goto ", "loop_while_identifier;", "\n", "end_loop_while: ", "", "", "", "", "", "");
+      char * ss = cat( wLabel,"loop_while_", ":\n", "\tif(!(" , $2->code, "))", " goto ", endLabel, ";\n", $3->code);
+      char * sss = cat("goto ", wLabel,"loop_while_;\n", endLabel, ":", "", "", "", "", "");
 
       char * s = cat(ss, sss, "", "", "", "", "", "", "", "");
       freeRecord($2);
@@ -518,9 +520,6 @@ cond : IF exp cmds ENDIF {
       free(s);
 //      scopeDecrement();
     };
-    // | IF exp cmds ELSE cond {
-      
-    // };
 
 return : RETURN exp ';' {
         char * s = cat("return ", $2->code, ";", "", "", "", "", "", "", "");
@@ -685,40 +684,24 @@ exp : exp OPPLUS exp {
       free($1);
     }
     | OPMULT ID {
-      // char *type = lookupSymbolType(symbolTable, $2);
-      //   if (type == NULL) {
-      //     yyerror("variavel não declarada");  //VER COMO DEIXAR ESSA PARTE DO CODIGO PARA VERIFICAR SE A VARIAVEL FOI DECLARADA
-      //     exit(0);
-      //   } else {
-      //   $$ = createRecord($2, type, "");
-      // }
-      // free($2);
       char * s = cat("*", $2, "", "", "", "", "", "", "", "");
       free($2);
       $$ = createRecord(s, "", "");
       free(s);
     }
     | INT {
-      // printf("INT\n");
-      // printf("%s\n", $1);
       $$ = createRecord($1, "int", "");
       free($1);
     }
     | FLOAT {
-      // printf("FLOAT\n");
-      // printf("%s\n", $1);
       $$ = createRecord($1, "float", "");
       free($1);
     }
     | STRING {
-      // printf("STRING\n");
-      // printf("%s\n", $1);
       $$ = createRecord($1, "str", "");
       free($1);
     }
     | BOOLEAN {
-      // printf("BOOLEAN\n");
-      // printf("%s\n", $1);
       $$ = createRecord($1, "bool", "");
       free($1);
     }
@@ -748,8 +731,6 @@ exp : exp OPPLUS exp {
     //   free(s);
     // }
     | '(' exp ')' {
-      // printf("EXPRESSION\n");
-      // printf("%s\n", $2->code);
       char * s = cat("(", $2->code, ")", "", "", "", "", "", "", "");
       //printf($2->result_type);
       if (strcmp($2->result_type, "logic") == 0) {
@@ -780,12 +761,6 @@ exp : exp OPPLUS exp {
       $$ = createRecord(s, "", "logic");
       free(s);
     }
-    // | LGNOT exp {
-    //   char * s = cat("!", $2->code, "", "", "", "", "", "", "", "");
-    //   freeRecord($2);
-    //   $$ = createRecord(s, "");
-    //   free(s);
-    // }
     | ID '[' exp ']' {
         char *s = cat($1, "[", $3->code, "]", "", "", "", "", "", "");
         free($1);
@@ -805,51 +780,13 @@ exp : exp OPPLUS exp {
       $$ = $1;
     };
 
-call : 
-// ID '(' exps_op ')' {
-//       // printf("exps_op\n");
-//       // printf("%s\n", $3->code);
-//       char * s = cat($1, "(", $3->code, ")", "", "", "", "", "", "");
-//       free($1);
-//       freeRecord($3);
-//       $$ = createRecord(s, "", "");
-//       free(s);
-//     }
-    // | 
-    ID '(' exps_op ')' ';' {
-      // printf("exps_op\n");
-      // printf("%s\n", $3->code);
+call : ID '(' exps_op ')' ';' {
       char * s = cat($1, "(", $3->code, ")", ";", "", "", "", "", "");
       free($1);
       freeRecord($3);
       $$ = createRecord(s, "", "");
       free(s);
     };
-    // | ID '(' exps_op ')' LGAND exp {
-    //   char * s = cat($1, "(", $3->code, ") && ", $6->code, "", "", "", "", "");
-    //   free($1);
-    //   freeRecord($3);
-    //   freeRecord($6);
-    //   $$ = createRecord(s, "", "");
-    //   free(s);
-    // }
-    // | ID '(' exps_op ')' LGOR exp {
-    //   char * s = cat($1, "(", $3->code, ") || ", $6->code, "", "", "", "", "");
-    //   free($1);
-    //   freeRecord($3);
-    //   freeRecord($6);
-    //   $$ = createRecord(s, "", "");
-    //   free(s);
-    // }
-    // | ID '(' exps_op ')' LGNOT exp {
-    //   // char * s = cat($1, "(!", $6->code, ")", "", "", "");
-    //   char * s = cat($1, "(", $3->code, ") ! ", $6->code, "", "", "", "", "");
-    //   free($1);
-    //   freeRecord($3);
-    //   freeRecord($6);
-    //   $$ = createRecord(s, "", "");
-    //   free(s);
-    // };
 
 exps_op : {
           $$ = createRecord("","", "");
@@ -868,19 +805,6 @@ exps : exp {
       $$ = createRecord(s, "", "");
       free(s);
     }
-    /* | OPMULT ID {
-      char * s = cat("*", $2, "", "", "", "", "", "", "", "");
-      free($2);
-      $$ = createRecord(s, "", "");
-      free(s);
-    } */
-    /* | OPMULT ID ',' exps {
-      char * s = cat("*", $2, ", ", $4->code, "", "", "", "", "", "");
-      free($2);
-      freeRecord($4);
-      $$ = createRecord(s, "", "");
-      free(s);
-    } */
     | '&' ID {
       char * s = cat("&", $2, "", "", "", "", "", "", "", "");
       free($2);
@@ -918,7 +842,7 @@ int main(int argc, char **argv) {
   fclose(yyin);
   fclose(yyout);
 
-  display(symbolTable);
+  //display(symbolTable);
 
   destroySymbolTable(symbolTable);
 
